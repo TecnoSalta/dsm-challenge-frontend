@@ -1,9 +1,24 @@
 <mat-toolbar color="primary">
   <span>Car Rental</span>
-  <span class="spacer"></span>
   <a routerLink="/">Home</a>
-  <a routerLink="/rental-registration">New Rental</a>
-  <a routerLink="/rental-management">Manage Rentals</a>
-  <a routerLink="/statistics">Statistics</a>
-  <a routerLink="/scheduled-service">Scheduled Service</a>
+  
+  <ng-container *ngIf="authService.isAuthenticated()">
+    <a routerLink="/rental-registration">New Rental</a>
+    <a routerLink="/rental-management">Manage Rentals</a>
+    <a routerLink="/statistics">Statistics</a>
+    <a routerLink="/scheduled-service">Scheduled Service</a>
+  </ng-container>
+
+  <span class="spacer"></span>
+
+  <ng-container *ngIf="!authService.isAuthenticated(); else loggedIn">
+    <a routerLink="/login">Login</a>
+  </ng-container>
+
+  <ng-template #loggedIn>
+    <a routerLink="/profile">
+      Welcome, {{ authService.user()?.fullName }}
+    </a>
+    <a (click)="authService.logout()" style="cursor: pointer;">Logout</a>
+  </ng-template>
 </mat-toolbar>
