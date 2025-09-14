@@ -1,27 +1,63 @@
-# AngularClient
+# Car Rental SPA
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.4.
+This project is a Single Page Application (SPA) for a car rental service, developed with Angular, following modern architecture and best practices.
 
-## Development server
+## Project Description
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Based on the proposed **Backend** develop a **SPA (Single Page Application)** using **Angular** in one of its latest versions, applying a modern, scalable and easy to maintain architecture. The project must include the use of **Angular Signals**, **Observables**, and a minimum functional UI/UX design Angular Material
 
-## Code scaffolding
+### Features
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+**Home**
 
-## Build
+- View to input dates and car type/model.
+- Display available cars within the selected date range.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+**Rental Registration**
 
-## Running unit tests
+- A form where the user can:
+  - Enter their **ID** **number** (DNI), **full name**, and **address**
+  - Select car type and model
+  - Select rental **start** and **end** **dates**
+- Upon submission, display rental confirmation and reserved car details.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+**Modification and Cancellation**
 
-## Running end-to-end tests
+- View a list of existing rentals (no login simulation required)
+- Ability to:
+  - Modify dates or the reserved car
+  - Cancel the reservation
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+**Statistics View**
 
-## Further help
+- A component that displays:
+  - The most rented car type
+  - The utilization percentage based on a date range
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+**Scheduled Service**
+
+- A dashboard-like view with:
+  - List of cars with scheduled service in the next 2 weeks
+  - Information: type, model, next service date
+
+## Instructions for running the project
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Run the development server**
+
+   ```bash
+   ng serve
+   ```
+
+   Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
