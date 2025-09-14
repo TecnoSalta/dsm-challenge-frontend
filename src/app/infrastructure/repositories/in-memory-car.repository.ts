@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { Car } from '../../../domain/models/car.model';
-import { CarRepository } from '../../../domain/repositories/car.repository';
+import { Car } from '../../domain/models/car.model';
+import { CarRepository } from '../../domain/repositories/car.repository';
 import { CARS } from '../data/mock-cars';
 
 @Injectable({

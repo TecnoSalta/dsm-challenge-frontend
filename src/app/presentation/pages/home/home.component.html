@@ -1,18 +1,16 @@
 <div class="container">
   <h1>Available Cars</h1>
   <div class="card-container">
-    @for (car of cars(); track car.model) {
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>{{ car.model }}</mat-card-title>
-          <mat-card-subtitle>{{ car.type }}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <p>
-            Services: {{ car.services.length }}
-          </p>
-        </mat-card-content>
-      </mat-card>
-    }
+    <mat-card *ngFor="let car of cars()">
+      <mat-card-header>
+        <mat-card-title>{{ car.model }}</mat-card-title>
+        <mat-card-subtitle>{{ car.type }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          Services: {{ car.services.length }}
+        </p>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>

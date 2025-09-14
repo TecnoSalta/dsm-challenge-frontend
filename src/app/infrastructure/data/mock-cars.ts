@@ -1,4 +1,4 @@
-import { Car } from "../../../domain/models/car.model";
+import { Car } from "../../domain/models/car.model";
 
 export const CARS: Car[] = [
   {
