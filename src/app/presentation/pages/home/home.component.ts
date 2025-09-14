@@ -1,5 +1,6 @@
-import { Component, signal, WritableSignal } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Car } from '../../../domain/models/car.model';
 import { GetAllCarsUseCase } from '../../../application/use-cases/get-all-cars.use-case';
 import { MatCardModule } from '@angular/material/card';
@@ -12,11 +13,7 @@ import { MatCardModule } from '@angular/material/card';
   imports: [CommonModule, MatCardModule],
 })
 export class HomeComponent {
-  public cars: WritableSignal<Car[]> = signal([]);
+  public cars = toSignal(this.getAllCarsUseCase.execute(), { initialValue: [] });
 
-  constructor(private getAllCarsUseCase: GetAllCarsUseCase) {
-    this.getAllCarsUseCase.execute().subscribe((cars: Car[]) => {
-      this.cars.set(cars);
-    });
-  }
+  constructor(private getAllCarsUseCase: GetAllCarsUseCase) {}
 }
