@@ -1,49 +1,42 @@
-import { Injectable, signal, computed, WritableSignal, Signal } from '@angular/core';
-import { Router } from '@angular/router';
-import { LoginUseCase } from '../use-cases/login.use-case';
-import { GetProfileUseCase } from '../use-cases/get-profile.use-case';
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { AuthRepository } from '../../domain/repositories/auth.repository';
 import { Credentials } from '../../domain/models/credentials.model';
 import { User } from '../../domain/models/user.model';
-import { tap } from 'rxjs';
+import { RegisterRequest } from '../../domain/models/register-request.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
-  private authToken: WritableSignal<string | null> = signal(null);
-  private currentUser: WritableSignal<User | null> = signal(null);
+export class AuthService extends AuthRepository {
+  private apiUrl = environment.apiUrl + '/auth';
 
-  public isAuthenticated: Signal<boolean> = computed(() => !!this.authToken());
-  public user: Signal<User | null> = computed(() => this.currentUser());
-
-  constructor(
-    private router: Router,
-    private loginUseCase: LoginUseCase,
-    private getProfileUseCase: GetProfileUseCase
-  ) {
-    // Check for a token in local storage on service initialization
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      this.authToken.set(token);
-      this.getProfileUseCase.execute().subscribe(user => this.currentUser.set(user));
-    }
+  constructor(private http: HttpClient) {
+    super();
   }
 
-  login(credentials: Credentials) {
-    return this.loginUseCase.execute(credentials).pipe(
-      tap(({ token }) => {
-        this.authToken.set(token);
-        localStorage.setItem('auth_token', token);
-        this.getProfileUseCase.execute().subscribe(user => this.currentUser.set(user));
-        this.router.navigate(['/profile']);
-      })
-    );
+  login(credentials: Credentials): Observable<{ token: string }> {
+    return this.http.post<{ token: string }>(`${this.apiUrl}/login`, credentials);
   }
 
-  logout() {
-    this.authToken.set(null);
-    this.currentUser.set(null);
-    localStorage.removeItem('auth_token');
-    this.router.navigate(['/login']);
+  register(request: RegisterRequest): Observable<{ token: string }> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'accept': 'text/plain'
+    });
+    return this.http.post<{ token: string }>(`${this.apiUrl}/register`, request, { headers });
+  }
+
+  getProfile(): Observable<User> {
+    // This would typically involve sending a token in the headers
+    // For now, returning a mock user
+    const mockUser: User = {
+      id: '1',
+      email: 'test@test.com',
+      fullName: 'Test User',
+    };
+    return of(mockUser);
   }
 }
