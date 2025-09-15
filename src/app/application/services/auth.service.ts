@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, Signal } from '@angular/core';
+import { Injectable, signal, Signal } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
 import { AuthRepository } from '../../domain/repositories/auth.repository';
 import { Credentials } from '../../domain/models/credentials.model';
@@ -8,29 +8,28 @@ import { AuthResponse } from '../../domain/models/auth-response.model';
 import { RefreshTokenRequest } from '../../domain/models/refresh-token-request.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { AuthStoreService } from './auth-store.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService extends AuthRepository {
   private apiUrl = environment.apiUrl + '/auth';
-  private readonly ACCESS_TOKEN_KEY = 'accessToken';
-  private readonly REFRESH_TOKEN_KEY = 'refreshToken';
 
   private _user = signal<User | null>(null);
   readonly user: Signal<User | null> = this._user.asReadonly();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private authStore: AuthStoreService) {
     super();
-    if (this.isAuthenticated()) {
-      this.getProfile().subscribe(); // Fetch user on service initialization if authenticated
+    if (this.authStore.accessToken()) {
+      this.getProfile().subscribe();
     }
   }
 
   login(credentials: Credentials): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
-        this.setTokens(response.accessToken, response.refreshToken);
+        this.authStore.setTokens(response.token, response.refreshToken); // Use response.token
         this.getProfile().subscribe();
       })
     );
@@ -43,7 +42,7 @@ export class AuthService extends AuthRepository {
     });
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, request, { headers }).pipe(
       tap(response => {
-        this.setTokens(response.accessToken, response.refreshToken);
+        this.authStore.setTokens(response.token, response.refreshToken); // Use response.token
         this.getProfile().subscribe();
       })
     );
@@ -52,15 +51,13 @@ export class AuthService extends AuthRepository {
   refreshToken(request: RefreshTokenRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/refresh-token`, request).pipe(
       tap(response => {
-        this.setTokens(response.accessToken, response.refreshToken);
+        this.authStore.setTokens(response.token, response.refreshToken); // Use response.token
       })
     );
   }
 
   getProfile(): Observable<User | null> {
-    // In a real app, this would fetch the user from the backend using the access token
-    // For now, we'll simulate it.
-    if (!this.isAuthenticated()) {
+    if (!this.authStore.accessToken()) {
       this._user.set(null);
       return of(null);
     }
@@ -75,26 +72,15 @@ export class AuthService extends AuthRepository {
   }
 
   isAuthenticated(): boolean {
-    return !!this.getAccessToken();
-  }
-
-  private setTokens(accessToken: string, refreshToken: string): void {
-    localStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
-    localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
-  }
-
-  getAccessToken(): string | null {
-    return localStorage.getItem(this.ACCESS_TOKEN_KEY);
+    return !!this.authStore.accessToken();
   }
 
   getRefreshToken(): string | null {
-    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+    return this.authStore.refreshToken();
   }
 
   logout(): void {
-    localStorage.removeItem(this.ACCESS_TOKEN_KEY);
-    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+    this.authStore.clearTokens();
     this._user.set(null);
   }
 }
-

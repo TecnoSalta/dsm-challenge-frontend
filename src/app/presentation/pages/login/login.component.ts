@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../application/services/auth.service';
 import { finalize } from 'rxjs';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router'; // Import Router
 
 @Component({
   selector: 'app-login',
@@ -29,6 +29,7 @@ import { RouterLink } from '@angular/router';
 export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private router = inject(Router); // Inject Router
 
   loginForm: FormGroup;
   loading = false;
@@ -57,6 +58,9 @@ export class LoginComponent {
         })
       )
       .subscribe({
+        next: () => {
+          this.router.navigate(['/']); // Navigate to Home page on successful login
+        },
         error: (err) => {
           this.error = err.message;
         },

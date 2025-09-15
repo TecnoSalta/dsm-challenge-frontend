@@ -13,7 +13,7 @@ export class CustomerApiService extends CustomerRepository {
   private apiUrl = environment.apiUrl;
 
   getByDni(dni: string): Observable<Customer | undefined> {
-    return this.http.get<Customer>(`${this.apiUrl}/Customers/${dni}`);
+    return this.http.get<Customer>(`${this.apiUrl}/Customers/dni/${dni}`);
   }
 
   // If we need to create new customers via API
