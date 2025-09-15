@@ -1,1 +1,26 @@
-<p>rental-management works!</p>
+<div class="container">
+  <h2>Rental Management</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Customer</th>
+        <th>Car</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let rental of rentals$ | async">
+        <td>{{ rental.customer.fullName }}</td>
+        <td>{{ rental.car.make }} {{ rental.car.model }}</td>
+        <td>{{ rental.startDate | date }}</td>
+        <td>{{ rental.endDate | date }}</td>
+        <td>
+          <button class="btn btn-sm btn-primary">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteRental(rental.id!)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

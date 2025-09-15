@@ -16,7 +16,7 @@ export class InMemoryCarRepository extends CarRepository {
   }
 
   getById(id: string): Observable<Car | undefined> {
-    const car = CARS.find((c) => c.model === id); // Using model as ID for now
+    const car = CARS.find((c) => c.id === id);
     return of(car);
   }
 

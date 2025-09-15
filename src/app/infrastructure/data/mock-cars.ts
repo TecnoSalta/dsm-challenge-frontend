@@ -2,23 +2,31 @@ import { Car } from "../../domain/models/car.model";
 
 export const CARS: Car[] = [
   {
-    model: 'VW Gol',
-    type: 'Sedan',
+    id: '1',
+    make: 'VW',
+    model: 'Gol',
+    dailyRate: 100,
     services: [],
   },
   {
-    model: 'Renault Duster',
-    type: 'SUV',
+    id: '2',
+    make: 'Renault',
+    model: 'Duster',
+    dailyRate: 120,
     services: [],
   },
   {
+    id: '3',
+    make: 'Mercedes-Benz',
     model: 'Sprinter Van',
-    type: 'Sport',
+    dailyRate: 250,
     services: [],
   },
   {
-    model: 'Dodge RAM',
-    type: 'Electric',
+    id: '4',
+    make: 'Dodge',
+    model: 'RAM',
+    dailyRate: 200,
     services: [],
   },
 ];

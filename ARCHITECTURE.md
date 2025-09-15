@@ -20,7 +20,7 @@ The project is structured into four main layers, each residing in its own direct
 - **Directory:** `src/app/domain/`
 - **Purpose:** This is the core of the application. It contains the enterprise-wide business logic and rules.
 - **Contents:**
-    - **Models (`/models`):** TypeScript interfaces representing the business entities and value objects (e.g., `Car`, `Rental`, `Customer`).
+    - **Models (`/models`):** TypeScript interfaces representing the business entities and value objects (e.g., `Car`, `Rental`, `Customer`). The `Car` model now includes `id`, `type` (for categorization like Sedan, SUV), `model`, `dailyRate`, and `services`.
     - **Repositories (`/repositories`):** Abstract classes or interfaces that define the contracts for data access (e.g., `CarRepository`). These interfaces are implemented by the Infrastructure layer.
 - **Dependencies:** This layer has **zero** dependencies on any other layer in the application.
 
@@ -52,11 +52,12 @@ The project is structured into four main layers, each residing in its own direct
 ## 3. Data Flow Example: Finding Available Cars
 
 1.  **`HomeComponent` (Presentation):** The user navigates to the home page.
-2.  The `HomeComponent` needs a list of cars. It injects and calls the `execute()` method of `GetAllCarsUseCase` (Application).
-3.  **`GetAllCarsUseCase` (Application):** This use case needs to fetch the data. It calls the `getAll()` method on the `CarRepository` interface (Domain) that was injected into its constructor.
+2.  The `HomeComponent` needs a list of cars. It injects and calls the `execute()` method of `GetCarMetadataUseCase` (Application) to get car types and models, and `GetAvailableCarsUseCase` (Application) to find available cars based on criteria.
+3.  **`GetCarMetadataUseCase` (Application):** This use case needs to fetch car metadata. It calls the `getCarMetadata()` method on the `CarRepository` interface (Domain) that was injected into its constructor.
 4.  **Dependency Injection:** Angular, using the providers configured in `main.ts`, injects the concrete `InMemoryCarRepository` (Infrastructure) where the `CarRepository` (Domain) is required.
-5.  **`InMemoryCarRepository` (Infrastructure):** This class implements the `getAll()` method. It retrieves the array of cars from the `mock-cars.ts` file and returns it as an `Observable`.
+5.  **`InMemoryCarRepository` (Infrastructure):** This class implements the `getCarMetadata()` method. It retrieves car data, extracts unique `type` (e.g., Sedan, SUV) and associated `model` information, and returns it as an `Observable` of `CarMetadata[]`.
 6.  The `Observable` flows back through the **Use Case** to the **Component**.
+7.  Similarly, `GetAvailableCarsUseCase` calls `getAvailableCars()` on `CarRepository`, which is implemented by `InMemoryCarRepository` to return `AvailableCar[]`.
 
 ## 4. State Management
 

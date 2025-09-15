@@ -1,7 +1,9 @@
 import { Service } from './service.model';
 
 export interface Car {
-  services: Service[];
-  type: string;
+  id: string;
+  make: string;
   model: string;
+  dailyRate: number;
+  services: Service[];
 }
