@@ -2,7 +2,7 @@
   <span>Car Rental</span>
   <a routerLink="/">Home</a>
   
-  <ng-container *ngIf="authService.isAuthenticated()">
+  <ng-container *ngIf="authStore.isAuthenticated()">
     <a routerLink="/rental-registration">New Rental</a>
     <a routerLink="/rental-management">Manage Rentals</a>
     <a routerLink="/statistics">Statistics</a>
@@ -12,14 +12,16 @@
   <span class="spacer"></span>
   <app-connection-status></app-connection-status>
 
-  <ng-container *ngIf="!authService.isAuthenticated(); else loggedIn">
+  <ng-container *ngIf="!authStore.isAuthenticated(); else loggedIn">
     <a routerLink="/login">Login</a>
   </ng-container>
 
   <ng-template #loggedIn>
     <a routerLink="/profile">
-      Welcome, {{ authService.user()?.fullName }}
+      Welcome, {{ authStore.userProfile()?.fullName }}
     </a>
+    <!-- Conditionally display Admin Dashboard link -->
+    <a *ngIf="authStore.role() === 'Admin'" routerLink="/admin-dashboard">Admin Dashboard</a>
     <a (click)="onLogout()" style="cursor: pointer;">Logout</a>
   </ng-template>
 </mat-toolbar>

@@ -26,6 +26,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { RentalStoreService } from '../../../application/services/rental-store.service';
 import { GetCustomerByDniUseCase } from '../../../application/use-cases/get-customer-by-dni.use-case';
+import { AuthStoreService } from '../../../application/services/auth-store.service'; // Import AuthStoreService
 
 @Component({
   selector: 'app-rental-registration-form',
@@ -57,11 +58,12 @@ export class RentalRegistrationFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private createRentalUseCase = inject(CreateRentalUseCase);
   private getAllCarsUseCase = inject(GetAllCarsUseCase);
-  private authService = inject(AuthService);
+  private authService = inject(AuthService); // Keep AuthService for now, might remove later
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private rentalStoreService = inject(RentalStoreService);
   private getCustomerByDniUseCase = inject(GetCustomerByDniUseCase);
+  private authStore = inject(AuthStoreService); // Inject AuthStoreService
 
   ngOnInit(): void {
     this.rentalForm = this.fb.group({
@@ -97,6 +99,19 @@ export class RentalRegistrationFormComponent implements OnInit {
       });
     }
 
+    // Pre-fill customer details if logged in as a customer
+    const userProfile = this.authStore.userProfile();
+    if (this.authStore.isAuthenticated() && userProfile && userProfile.role === 'Customer') {
+      this.rentalForm.get('dni')?.setValue(userProfile.dni);
+      this.rentalForm.get('fullName')?.setValue(userProfile.fullName);
+      this.rentalForm.get('address')?.setValue(userProfile.address);
+      this.customerFound = true; // Mark as customer found
+      // Disable fields
+      this.rentalForm.get('dni')?.disable();
+      this.rentalForm.get('fullName')?.disable();
+      this.rentalForm.get('address')?.disable();
+    }
+
     // Always fetch all cars for the dropdown, regardless of pre-selection
     this.cars$ = this.getAllCarsUseCase.execute().pipe(
       tap(cars => {
@@ -124,10 +139,14 @@ export class RentalRegistrationFormComponent implements OnInit {
             this.rentalForm.get('fullName')?.setValue(customer.fullName);
             this.rentalForm.get('address')?.setValue(customer.address);
             this.customerFound = true;
+            this.rentalForm.get('fullName')?.disable(); // Disable if found
+            this.rentalForm.get('address')?.disable(); // Disable if found
           } else {
             this.rentalForm.get('fullName')?.setValue('');
             this.rentalForm.get('address')?.setValue('');
             this.customerFound = false;
+            this.rentalForm.get('fullName')?.enable(); // Enable if not found
+            this.rentalForm.get('address')?.enable(); // Enable if not found
           }
         },
         error: (err) => {
@@ -135,21 +154,25 @@ export class RentalRegistrationFormComponent implements OnInit {
           this.rentalForm.get('fullName')?.setValue('');
           this.rentalForm.get('address')?.setValue('');
           this.customerFound = false;
+          this.rentalForm.get('fullName')?.enable();
+          this.rentalForm.get('address')?.enable();
         }
       });
     } else {
       this.rentalForm.get('fullName')?.setValue('');
       this.rentalForm.get('address')?.setValue('');
       this.customerFound = false;
+      this.rentalForm.get('fullName')?.enable();
+      this.rentalForm.get('address')?.enable();
     }
   }
 
   onSubmit(): void {
     if (this.rentalForm.valid) {
-      const user = this.authService.user();
+      const userProfile = this.authStore.userProfile(); // Use userProfile from AuthStoreService
       const selectedCar = this.cars.find(car => car.id === this.rentalForm.value.carId);
 
-      if (user && selectedCar) {
+      if (userProfile && selectedCar) { // Check userProfile instead of user
         const customer: Customer = {
           ID: this.rentalForm.value.dni,
           fullName: this.rentalForm.value.fullName,
@@ -164,20 +187,19 @@ export class RentalRegistrationFormComponent implements OnInit {
         };
 
         this.createRentalUseCase.execute(newRental).subscribe(
-          (createdRental) => { // Get the created rental with its ID
+          (createdRental) => {
             this.rentalStoreService.setRentalFormState({
               carId: createdRental.car.id,
               startDate: createdRental.startDate.toISOString().split('T')[0],
               endDate: createdRental.endDate.toISOString().split('T')[0],
               selectedCar: createdRental.car,
               customer: createdRental.customer,
-              id: createdRental.id // Store the rental ID
+              id: createdRental.id
             });
-            this.router.navigate(['/rental-confirmation']); // Navigate to confirmation page
+            this.router.navigate(['/rental-confirmation']);
           },
           (error) => {
             console.error('Error creating rental:', error);
-            // Handle error, show message to user
           }
         );
       }
