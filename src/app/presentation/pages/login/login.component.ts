@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../application/services/auth.service';
 import { finalize } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ import { finalize } from 'rxjs';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    RouterLink
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],

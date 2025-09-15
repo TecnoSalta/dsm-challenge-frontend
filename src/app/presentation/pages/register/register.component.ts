@@ -4,16 +4,32 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { RegisterUseCase } from '../../../application/use-cases/register.use-case';
 import { RegisterRequest } from '../../../domain/models/register-request.model';
 import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatProgressSpinnerModule
+  ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
   registerForm: FormGroup;
+  loading = false;
+  error: string | null = null;
   private registerUseCase = inject(RegisterUseCase);
   private router = inject(Router);
 
@@ -27,19 +43,28 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
-    if (this.registerForm.valid) {
-      const request: RegisterRequest = this.registerForm.value;
-      this.registerUseCase.execute(request).subscribe({
+    if (this.registerForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
+    this.error = null;
+
+    const request: RegisterRequest = this.registerForm.value;
+    this.registerUseCase.execute(request)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
         next: () => {
           alert('Registration successful!');
-          this.router.navigate(['/login']); // Navigate to login after successful registration
+          this.router.navigate(['/login']);
         },
         error: (err) => {
-          alert('Registration failed: ' + err.message);
+          this.error = err.message || 'Registration failed.';
         }
       });
-    } else {
-      alert('Please fill in all required fields correctly.');
-    }
   }
 }
