@@ -4,6 +4,8 @@ import { AuthRepository } from '../../domain/repositories/auth.repository';
 import { Credentials } from '../../domain/models/credentials.model';
 import { User } from '../../domain/models/user.model';
 import { RegisterRequest } from '../../domain/models/register-request.model';
+import { AuthResponse } from '../../domain/models/auth-response.model';
+import { RefreshTokenRequest } from '../../domain/models/refresh-token-request.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
@@ -12,7 +14,8 @@ import { environment } from '../../../environments/environment';
 })
 export class AuthService extends AuthRepository {
   private apiUrl = environment.apiUrl + '/auth';
-  private readonly TOKEN_KEY = 'authToken';
+  private readonly ACCESS_TOKEN_KEY = 'accessToken';
+  private readonly REFRESH_TOKEN_KEY = 'refreshToken';
 
   private _user = signal<User | null>(null);
   readonly user: Signal<User | null> = this._user.asReadonly();
@@ -24,30 +27,38 @@ export class AuthService extends AuthRepository {
     }
   }
 
-  login(credentials: Credentials): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(`${this.apiUrl}/login`, credentials).pipe(
+  login(credentials: Credentials): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
-        this.setToken(response.token);
+        this.setTokens(response.accessToken, response.refreshToken);
         this.getProfile().subscribe();
       })
     );
   }
 
-  register(request: RegisterRequest): Observable<{ token: string }> {
+  register(request: RegisterRequest): Observable<AuthResponse> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'accept': 'text/plain'
     });
-    return this.http.post<{ token: string }>(`${this.apiUrl}/register`, request, { headers }).pipe(
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, request, { headers }).pipe(
       tap(response => {
-        this.setToken(response.token);
+        this.setTokens(response.accessToken, response.refreshToken);
         this.getProfile().subscribe();
+      })
+    );
+  }
+
+  refreshToken(request: RefreshTokenRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/refresh-token`, request).pipe(
+      tap(response => {
+        this.setTokens(response.accessToken, response.refreshToken);
       })
     );
   }
 
   getProfile(): Observable<User | null> {
-    // In a real app, this would fetch the user from the backend using the token
+    // In a real app, this would fetch the user from the backend using the access token
     // For now, we'll simulate it.
     if (!this.isAuthenticated()) {
       this._user.set(null);
@@ -64,19 +75,25 @@ export class AuthService extends AuthRepository {
   }
 
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    return !!this.getAccessToken();
   }
 
-  private setToken(token: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
+  private setTokens(accessToken: string, refreshToken: string): void {
+    localStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
+    localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
   }
 
-  private getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+  getAccessToken(): string | null {
+    return localStorage.getItem(this.ACCESS_TOKEN_KEY);
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
   }
 
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.ACCESS_TOKEN_KEY);
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     this._user.set(null);
   }
 }
