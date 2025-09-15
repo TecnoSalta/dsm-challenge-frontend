@@ -19,6 +19,6 @@
     <a routerLink="/profile">
       Welcome, {{ authService.user()?.fullName }}
     </a>
-    <a (click)="authService.logout()" style="cursor: pointer;">Logout</a>
+    <a (click)="onLogout()" style="cursor: pointer;">Logout</a>
   </ng-template>
 </mat-toolbar>
