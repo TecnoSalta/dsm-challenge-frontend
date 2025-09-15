@@ -12,6 +12,8 @@ import { CarApiService } from './app/infrastructure/repositories/car-api.service
 import { RentalRepository } from './app/domain/repositories/rental.repository';
 import { RentalApiRepository } from './app/infrastructure/repositories/rental-api.repository';
 import { InMemoryRentalRepository } from './app/infrastructure/repositories/in-memory-rental.repository';
+import { CustomerRepository } from './app/domain/repositories/customer.repository'; // Import CustomerRepository
+import { CustomerApiService } from './app/infrastructure/repositories/customer-api.service'; // Import CustomerApiService
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -21,6 +23,7 @@ bootstrapApplication(AppComponent, {
     { provide: CarRepository, useClass: CarApiService },
     { provide: AuthRepository, useClass: AuthService },
     { provide: RentalRepository, useClass: RentalApiRepository },
+    { provide: CustomerRepository, useClass: CustomerApiService }, // Add CustomerRepository provider
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
 }).catch((err) => console.error(err));

@@ -9,6 +9,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Router } from '@angular/router';
 
 import { GetCarMetadataUseCase } from '../../../application/use-cases/get-car-metadata.use-case';
 import { GetAvailableCarsUseCase } from '../../../application/use-cases/get-available-cars.use-case';
@@ -16,6 +17,8 @@ import { CarMetadata } from '../../../domain/models/car-metadata.model';
 import { AvailableCar } from '../../../domain/models/available-car.model';
 import { AvailabilityRequest } from '../../../domain/models/availability-request.model';
 import { finalize } from 'rxjs';
+import { RentalStoreService } from '../../../application/services/rental-store.service';
+import { Car } from '../../../domain/models/car.model';
 
 @Component({
   selector: 'app-home',
@@ -45,6 +48,8 @@ export class HomeComponent implements OnInit {
 
   private getCarMetadataUseCase = inject(GetCarMetadataUseCase);
   private getAvailableCarsUseCase = inject(GetAvailableCarsUseCase);
+  private router = inject(Router);
+  private rentalStoreService = inject(RentalStoreService);
 
   constructor(private fb: FormBuilder) {
     this.searchForm = this.fb.group({
@@ -73,7 +78,7 @@ export class HomeComponent implements OnInit {
 
   onTypeChange(): void {
     const selectedType = this.searchForm.get('carType')?.value;
-    this.searchForm.get('model')?.setValue(''); // Clear model selection
+    this.searchForm.get('model')?.setValue('');
     if (selectedType) {
       this.filteredModels = this.carMetadata.find(m => m.type === selectedType)?.models || [];
     } else {
@@ -116,5 +121,31 @@ export class HomeComponent implements OnInit {
           this.error = 'Failed to fetch available cars.';
         }
       });
+  }
+
+  rentCar(carId: string): void {
+    const selectedAvailableCar = this.availableCars.find(car => car.id === carId);
+    const startDate = this.searchForm.get('startDate')?.value;
+    const endDate = this.searchForm.get('endDate')?.value;
+
+    if (selectedAvailableCar && startDate && endDate) {
+      const carToRent: Car = {
+        id: selectedAvailableCar.id,
+        make: selectedAvailableCar.type,
+        model: selectedAvailableCar.model,
+        dailyRate: selectedAvailableCar.dailyRate,
+        services: [],
+      };
+
+      this.rentalStoreService.setRentalFormState({
+        carId: carToRent.id,
+        startDate: startDate.toISOString().split('T')[0],
+        endDate: endDate.toISOString().split('T')[0],
+        selectedCar: carToRent,
+      });
+      this.router.navigate(['/rental-registration']);
+    } else {
+      console.error('Could not rent car: missing car details or dates.');
+    }
   }
 }

@@ -71,7 +71,7 @@
           <p>Daily Rate: ${{ car.dailyRate | number:'1.2-2' }}</p>
         </mat-card-content>
         <mat-card-actions>
-          <button mat-button color="accent">Rent Now</button>
+          <button mat-button color="accent" (click)="rentCar(car.id)">Rent Now</button>
         </mat-card-actions>
       </mat-card>
     </div>

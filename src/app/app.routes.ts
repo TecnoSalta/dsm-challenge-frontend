@@ -14,8 +14,15 @@ export const routes: Routes = [
     path: 'rental-registration',
     loadComponent: () =>
       import(
-        './presentation/pages/rental-registration/rental-registration.component'
-      ).then((m) => m.RentalRegistrationComponent),
+        './presentation/pages/rental-registration/rental-registration-form.component'
+      ).then((m) => m.RentalRegistrationFormComponent),
+  },
+  {
+    path: 'rental-confirmation', // New route
+    loadComponent: () =>
+      import(
+        './presentation/pages/rental-confirmation/rental-confirmation.component'
+      ).then((m) => m.RentalConfirmationComponent),
   },
   {
     path: 'rental-management',
