@@ -1,0 +1,9 @@
+.notification-container {
+  display: flex;
+  align-items: center;
+}
+
+.message {
+  margin: 0 16px;
+  flex-grow: 1;
+}

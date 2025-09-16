@@ -2,3 +2,28 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.notification-success .mdc-snackbar__surface {
+  background-color: #4CAF50 !important; /* Green */
+  color: white !important;
+}
+
+.notification-error .mdc-snackbar__surface {
+  background-color: #F44336 !important; /* Red */
+  color: white !important;
+}
+
+.notification-warning .mdc-snackbar__surface {
+  background-color: #FFC107 !important; /* Yellow */
+  color: black !important; // Better contrast for yellow
+}
+
+.notification-info .mdc-snackbar__surface {
+  background-color: #2196F3 !important; /* Blue */
+  color: white !important;
+}
+
+/* Style for the icon and button inside the snackbar */
+.notification-container mat-icon {
+  color: inherit;
+}

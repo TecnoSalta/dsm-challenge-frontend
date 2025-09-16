@@ -8,6 +8,7 @@ import { AuthRepository } from './app/domain/repositories/auth.repository';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { AuthService } from './app/application/services/auth.service';
 import { authInterceptor } from './app/application/interceptors/auth.interceptor'; // Import authInterceptor
+import { httpErrorInterceptor } from './app/application/interceptors/http-error.interceptor';
 import { CarApiService } from './app/infrastructure/repositories/car-api.service';
 import { RentalRepository } from './app/domain/repositories/rental.repository';
 import { RentalApiRepository } from './app/infrastructure/repositories/rental-api.repository';
@@ -19,7 +20,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideAnimations(),
-    provideHttpClient(withInterceptors([authInterceptor])), // Use authInterceptor
+    provideHttpClient(withInterceptors([authInterceptor, httpErrorInterceptor])), // Use authInterceptor
     { provide: CarRepository, useClass: CarApiService },
     { provide: AuthRepository, useClass: AuthService },
     { provide: RentalRepository, useClass: RentalApiRepository },
