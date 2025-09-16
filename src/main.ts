@@ -14,6 +14,7 @@ import { RentalRepository } from './app/domain/repositories/rental.repository';
 import { RentalApiRepository } from './app/infrastructure/repositories/rental-api.repository';
 import { CustomerRepository } from './app/domain/repositories/customer.repository';
 import { CustomerApiService } from './app/infrastructure/repositories/customer-api.service';
+import { AuthApiRepository } from './app/infrastructure/repositories/auth-api.repository';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -21,7 +22,7 @@ bootstrapApplication(AppComponent, {
     provideAnimations(),
     provideHttpClient(withInterceptors([authInterceptor, httpErrorInterceptor])), // Use authInterceptor
     { provide: CarRepository, useClass: CarApiService },
-    { provide: AuthRepository, useClass: AuthService },
+    { provide: AuthRepository, useClass: AuthApiRepository },
     { provide: RentalRepository, useClass: RentalApiRepository },
     { provide: CustomerRepository, useClass: CustomerApiService },
   ],

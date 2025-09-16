@@ -10,4 +10,5 @@ export interface ICustomerProfile {
 export interface IUserProfile extends User {
   role?: string;
   customer?: ICustomerProfile;
+  expiration?: string; // Add expiration
 }

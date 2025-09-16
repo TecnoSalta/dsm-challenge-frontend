@@ -29,7 +29,7 @@ export class RentalConfirmationComponent implements OnInit {
     if (state.selectedCar && state.carId && state.startDate && state.endDate) {
       this.rentalDetails = {
         id: state.carId, // Using carId as a placeholder for rentalId
-        customer: { ID: '', fullName: '', address: '' }, // Customer details will be filled later
+        customer: { id: '', fullName: '', address: '' }, // Customer details will be filled later
         car: state.selectedCar,
         startDate: new Date(state.startDate),
         endDate: new Date(state.endDate),

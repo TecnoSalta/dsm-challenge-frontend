@@ -1,5 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { IUserProfile } from '../../domain/models/user-profile.model'; // Import IUserProfile
+import { AuthResponse } from '../../domain/models/auth-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthStoreService {
@@ -18,11 +19,21 @@ export class AuthStoreService {
   isAuthenticated = computed(() => !!this.accessToken() && !!this.userProfile()); // Computed signal for authentication status
   role = computed(() => this.userProfile()?.role || null); // Computed signal for user role
 
-  setTokens(accessToken: string, refreshToken: string) {
-    localStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
-    localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
-    this._accessToken.set(accessToken);
-    this._refreshToken.set(refreshToken);
+  setTokens(authResponse: AuthResponse) {
+    localStorage.setItem(this.ACCESS_TOKEN_KEY, authResponse.token);
+    localStorage.setItem(this.REFRESH_TOKEN_KEY, authResponse.refreshToken);
+    this._accessToken.set(authResponse.token);
+    this._refreshToken.set(authResponse.refreshToken);
+
+    const userProfile: IUserProfile = {
+      id: authResponse.customerId || '',
+      email: '', // Email is not in AuthResponse, will be fetched by getProfile
+      fullName: '', // FullName is not in AuthResponse, will be fetched by getProfile
+      role: authResponse.role,
+      expiration: authResponse.expiration,
+      customer: authResponse.customerId ? { id: authResponse.customerId, dni: '', fullName: '', address: '' } : undefined,
+    };
+    this.setUserProfile(userProfile);
   }
 
   setUserProfile(profile: IUserProfile | null) {

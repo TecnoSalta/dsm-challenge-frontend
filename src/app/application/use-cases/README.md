@@ -65,7 +65,7 @@ Below are details on the workflow and dataflow for key Use Cases implemented in 
     -   **Output:** `Observable<Customer | undefined>`
         ```typescript
         export interface Customer {
-          ID: string;
+          id: string;
           fullName: string;
           address: string;
         }

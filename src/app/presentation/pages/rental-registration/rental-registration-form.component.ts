@@ -7,11 +7,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
-import { CreateRentalUseCase } from '../../../application/use-cases/create-rental.use-case';
+import { RegisterRentalUseCase } from '../../../application/use-cases/register-rental.use-case';
 import { Car } from '../../../domain/models/car.model';
 import { Rental } from '../../../domain/models/rental.model';
-import { Observable, tap } from 'rxjs';
+import { Observable,  } from 'rxjs';
 import { Customer } from '../../../domain/models/customer.model';
+import { RegisterRentalRequest } from '../../../domain/models/register-rental-request.model';
 
 // Angular Material Imports
 import { MatCardModule } from '@angular/material/card';
@@ -54,7 +55,7 @@ export class RentalRegistrationFormComponent implements OnInit {
   customerFound = false;
 
   private fb = inject(FormBuilder);
-  private createRentalUseCase = inject(CreateRentalUseCase);
+  private registerRentalUseCase = inject(RegisterRentalUseCase);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private rentalStoreService = inject(RentalStoreService);
@@ -153,20 +154,14 @@ export class RentalRegistrationFormComponent implements OnInit {
       const selectedCar = this.cars.find(car => car.id === this.rentalForm.value.carId);
 
       if (userProfile && selectedCar) { // Check userProfile instead of user
-        const customer: Customer = {
-          ID: this.rentalForm.value.dni,
-          fullName: this.rentalForm.value.fullName,
-          address: this.rentalForm.value.address,
+        const registerRentalRequest: RegisterRentalRequest = {
+          customerId: userProfile.customer?.id || '',
+          carId: selectedCar.id || '',
+          startDate: this.rentalForm.value.startDate.toISOString().split('T')[0],
+          endDate: this.rentalForm.value.endDate.toISOString().split('T')[0],
         };
 
-        const newRental: Rental = {
-          startDate: this.rentalForm.value.startDate,
-          endDate: this.rentalForm.value.endDate,
-          car: selectedCar,
-          customer: customer,
-        };
-
-        this.createRentalUseCase.execute(newRental).subscribe(
+        this.registerRentalUseCase.execute(registerRentalRequest).subscribe(
           (createdRental) => {
             this.rentalStoreService.setRentalFormState({
               carId: createdRental.car.id,

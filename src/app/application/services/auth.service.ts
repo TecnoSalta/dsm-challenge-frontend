@@ -5,55 +5,44 @@ import { Credentials } from '../../domain/models/credentials.model';
 import { RegisterRequest } from '../../domain/models/register-request.model';
 import { AuthResponse } from '../../domain/models/auth-response.model';
 import { RefreshTokenRequest } from '../../domain/models/refresh-token-request.model';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
 import { AuthStoreService } from './auth-store.service';
-import { ProfileService } from './profile.service'; // Import ProfileService
 import { IUserProfile } from '../../domain/models/user-profile.model'; // Import IUserProfile
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService extends AuthRepository {
-  private apiUrl = environment.apiUrl + '/auth';
-
-  private http = inject(HttpClient);
+export class AuthService {
   private authStore = inject(AuthStoreService);
-  private profileService = inject(ProfileService);
+  private authRepository = inject(AuthRepository);
 
   constructor() {
-    super();
     if (this.authStore.accessToken()) {
       this.getProfile().subscribe();
     }
   }
 
   login(credentials: Credentials): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
+    return this.authRepository.login(credentials).pipe(
       tap(response => {
-        this.authStore.setTokens(response.token, response.refreshToken);
+        this.authStore.setTokens(response);
         this.getProfile().subscribe();
       })
     );
   }
 
   register(request: RegisterRequest): Observable<AuthResponse> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'accept': 'text/plain'
-    });
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, request, { headers }).pipe(
+    return this.authRepository.register(request).pipe(
       tap(response => {
-        this.authStore.setTokens(response.token, response.refreshToken);
+        this.authStore.setTokens(response);
         this.getProfile().subscribe();
       })
     );
   }
 
   refreshToken(request: RefreshTokenRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/refresh-token`, request).pipe(
+    return this.authRepository.refreshToken(request).pipe(
       tap(response => {
-        this.authStore.setTokens(response.token, response.refreshToken);
+        this.authStore.setTokens(response);
       })
     );
   }
@@ -64,7 +53,7 @@ export class AuthService extends AuthRepository {
       return of(null);
     }
 
-    return this.profileService.getProfile().pipe(
+    return this.authRepository.getProfile().pipe(
       tap(profile => {
         this.authStore.setUserProfile(profile);
       }),
@@ -77,7 +66,7 @@ export class AuthService extends AuthRepository {
   }
 
   isAuthenticated(): boolean {
-    return !!this.authStore.accessToken();
+    return this.authRepository.isAuthenticated();
   }
 
   getRefreshToken(): string | null {

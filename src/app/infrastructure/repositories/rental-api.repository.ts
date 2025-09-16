@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Rental } from '../../domain/models/rental.model';
 import { RentalRepository } from '../../domain/repositories/rental.repository';
 import { RentalApiService } from './rental-api.service';
+import { RegisterRentalRequest } from '../../domain/models/register-rental-request.model';
 
 @Injectable({
   providedIn: 'root',
@@ -29,5 +30,9 @@ export class RentalApiRepository extends RentalRepository {
 
   delete(id: string): Observable<void> {
     return this.rentalApiService.delete(id);
+  }
+
+  registerRental(request: RegisterRentalRequest): Observable<Rental> {
+    return this.rentalApiService.registerRental(request);
   }
 }

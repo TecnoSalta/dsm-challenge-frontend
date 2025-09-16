@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Rental } from '../../domain/models/rental.model';
+import { RegisterRentalRequest } from '../../domain/models/register-rental-request.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -30,5 +31,9 @@ export class RentalApiService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  registerRental(request: RegisterRentalRequest): Observable<Rental> {
+    return this.http.post<Rental>(this.apiUrl, request);
   }
 }

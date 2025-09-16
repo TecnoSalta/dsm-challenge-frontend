@@ -38,7 +38,7 @@ export function authInterceptor(request: HttpRequest<any>, next: HttpHandlerFn):
         return authService.refreshToken(refreshRequest).pipe(
           switchMap((response: any) => {
             authInterceptorService.isRefreshing = false;
-            authStore.setTokens(response.accessToken, response.refreshToken);
+            authStore.setTokens(response);
             authInterceptorService.refreshTokenSubject.next(response.accessToken);
             return handler(addToken(req, response.accessToken)); // Fixed: call handler directly
           }),
