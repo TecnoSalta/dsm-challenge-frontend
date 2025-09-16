@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,10 +12,10 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [CommonModule, MatIconModule, MatButtonModule]
 })
 export class NotificationComponent {
-  constructor(
-    @Inject(MAT_SNACK_BAR_DATA) public data: { message: string, type: string },
-    public snackBarRef: MatSnackBarRef<NotificationComponent>
-  ) { }
+  public data: { message: string, type: string } = inject(MAT_SNACK_BAR_DATA);
+  public snackBarRef: MatSnackBarRef<NotificationComponent> = inject(MatSnackBarRef);
+
+  constructor() { }
 
   get icon(): string {
     switch (this.data.type) {

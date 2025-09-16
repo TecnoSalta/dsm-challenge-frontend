@@ -12,7 +12,6 @@ import { httpErrorInterceptor } from './app/application/interceptors/http-error.
 import { CarApiService } from './app/infrastructure/repositories/car-api.service';
 import { RentalRepository } from './app/domain/repositories/rental.repository';
 import { RentalApiRepository } from './app/infrastructure/repositories/rental-api.repository';
-import { InMemoryRentalRepository } from './app/infrastructure/repositories/in-memory-rental.repository';
 import { CustomerRepository } from './app/domain/repositories/customer.repository';
 import { CustomerApiService } from './app/infrastructure/repositories/customer-api.service';
 

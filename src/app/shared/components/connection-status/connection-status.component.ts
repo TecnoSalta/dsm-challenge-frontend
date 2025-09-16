@@ -1,5 +1,4 @@
-// src/app/shared/components/connection-status/connection-status.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { SyncService } from '../../../core/services/sync.service';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -36,7 +35,7 @@ import { MatIconModule } from '@angular/material/icon';
 export class ConnectionStatusComponent implements OnInit {
   isOnline = true;
 
-  constructor(private syncService: SyncService) {}
+  private syncService = inject(SyncService);
 
   ngOnInit(): void {
     this.isOnline = this.syncService.isConnected();

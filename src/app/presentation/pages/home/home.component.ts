@@ -51,7 +51,9 @@ export class HomeComponent implements OnInit {
   private router = inject(Router);
   private rentalStoreService = inject(RentalStoreService);
 
-  constructor(private fb: FormBuilder) {
+  private fb = inject(FormBuilder);
+
+  constructor() {
     this.searchForm = this.fb.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],

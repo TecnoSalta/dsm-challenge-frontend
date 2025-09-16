@@ -1,5 +1,5 @@
 // src/app/core/services/vehicle-catalog.service.ts
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, from, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { IndexedDbService } from './indexed-db.service';
@@ -24,10 +24,8 @@ export interface VehicleModel {
   providedIn: 'root'
 })
 export class VehicleCatalogService {
-  constructor(
-    private indexedDb: IndexedDbService,
-    private syncService: SyncService
-  ) {}
+  private indexedDb = inject(IndexedDbService);
+  private syncService = inject(SyncService);
 
   getVehicleTypes(): Observable<VehicleType[]> {
     return this.syncService.getVehicleTypes().pipe(

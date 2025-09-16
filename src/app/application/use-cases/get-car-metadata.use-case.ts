@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CarRepository } from '../../domain/repositories/car.repository';
 import { CarMetadata } from '../../domain/models/car-metadata.model';
@@ -8,7 +8,7 @@ import { CarMetadata } from '../../domain/models/car-metadata.model';
 })
 export class GetCarMetadataUseCase {
 
-  constructor(private carRepository: CarRepository) { }
+  private carRepository = inject(CarRepository);
 
   execute(): Observable<CarMetadata[]> {
     return this.carRepository.getCarMetadata();

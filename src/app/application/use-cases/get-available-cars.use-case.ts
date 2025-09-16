@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CarRepository } from '../../domain/repositories/car.repository';
 import { AvailableCar } from '../../domain/models/available-car.model';
@@ -9,7 +9,7 @@ import { AvailabilityRequest } from '../../domain/models/availability-request.mo
 })
 export class GetAvailableCarsUseCase {
 
-  constructor(private carRepository: CarRepository) { }
+  private carRepository = inject(CarRepository);
 
   execute(request: AvailabilityRequest): Observable<AvailableCar[]> {
     return this.carRepository.getAvailableCars(request);

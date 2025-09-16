@@ -52,13 +52,11 @@ export class RentalRegistrationFormComponent implements OnInit {
   cars$!: Observable<Car[]>;
   cars: Car[] = [];
   selectedCar: Car | undefined;
-  isCarPreselected: boolean = false;
-  customerFound: boolean = false;
+  isCarPreselected = false;
+  customerFound = false;
 
   private fb = inject(FormBuilder);
   private createRentalUseCase = inject(CreateRentalUseCase);
-  private getAllCarsUseCase = inject(GetAllCarsUseCase);
-  private authService = inject(AuthService); // Keep AuthService for now, might remove later
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private rentalStoreService = inject(RentalStoreService);
@@ -89,12 +87,7 @@ export class RentalRegistrationFormComponent implements OnInit {
         const carId = params['carId'];
         if (carId) {
           this.rentalForm.get('carId')?.setValue(carId);
-          this.isCarPreselected = true;
-          // Fetch car details if preselected by query param and not from store
-          this.getAllCarsUseCase.execute().subscribe(cars => {
-            this.cars = cars;
-            this.selectedCar = this.cars.find(car => car.id === carId);
-          });
+          this.isCarPreselected = true;          
         }
       });
     }
@@ -111,18 +104,7 @@ export class RentalRegistrationFormComponent implements OnInit {
       this.rentalForm.get('fullName')?.disable();
       this.rentalForm.get('address')?.disable();
     }
-
-    // Always fetch all cars for the dropdown, regardless of pre-selection
-    this.cars$ = this.getAllCarsUseCase.execute().pipe(
-      tap(cars => {
-        this.cars = cars;
-        // If car was preselected by query param, ensure selectedCar is set from fetched cars
-        if (this.isCarPreselected && !this.selectedCar) {
-          const carId = this.rentalForm.get('carId')?.value;
-          this.selectedCar = this.cars.find(car => car.id === carId);
-        }
-      })
-    );
+    
   }
 
   onCarSelectionChange(): void {

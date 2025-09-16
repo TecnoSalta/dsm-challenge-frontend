@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { CarRepository } from '../../domain/repositories/car.repository';
@@ -15,7 +15,9 @@ export class CarApiService extends CarRepository {
   private apiUrl = environment.apiUrl + '/Cars';
   private availabilityUrl = environment.apiUrl + '/Availability';
 
-  constructor(private http: HttpClient) {
+  private http = inject(HttpClient);
+
+  constructor() {
     super();
   }
 

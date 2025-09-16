@@ -1,5 +1,5 @@
 // src/app/core/services/sync.service.ts
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { IndexedDbService } from './indexed-db.service';
 import { catchError, switchMap, from, of } from 'rxjs';
@@ -10,9 +10,10 @@ import { catchError, switchMap, from, of } from 'rxjs';
 export class SyncService {
   private isOnline = navigator.onLine;
 
+  private http = inject(HttpClient);
+  private indexedDb = inject(IndexedDbService);
+
   constructor(
-    private http: HttpClient,
-    private indexedDb: IndexedDbService
   ) {
     // Escuchar eventos de conexión
     window.addEventListener('online', () => this.handleOnlineStatus());

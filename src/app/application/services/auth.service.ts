@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, of, tap, catchError } from 'rxjs'; // Added catchError
 import { AuthRepository } from '../../domain/repositories/auth.repository';
 import { Credentials } from '../../domain/models/credentials.model';
@@ -17,13 +17,11 @@ import { IUserProfile } from '../../domain/models/user-profile.model'; // Import
 export class AuthService extends AuthRepository {
   private apiUrl = environment.apiUrl + '/auth';
 
-  // Removed _user and user signals, as AuthStoreService will manage user profile
+  private http = inject(HttpClient);
+  private authStore = inject(AuthStoreService);
+  private profileService = inject(ProfileService);
 
-  constructor(
-    private http: HttpClient,
-    private authStore: AuthStoreService,
-    private profileService: ProfileService // Inject ProfileService
-  ) {
+  constructor() {
     super();
     if (this.authStore.accessToken()) {
       this.getProfile().subscribe();

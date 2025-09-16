@@ -33,7 +33,9 @@ export class RegisterComponent {
   private registerUseCase = inject(RegisterUseCase);
   private router = inject(Router);
 
-  constructor(private fb: FormBuilder) {
+  private fb = inject(FormBuilder);
+
+  constructor() {
     this.registerForm = this.fb.group({
       dni: ['', Validators.required],
       fullName: ['', Validators.required],
