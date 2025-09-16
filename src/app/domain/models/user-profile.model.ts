@@ -1,8 +1,13 @@
-import { User } from './user.model'; // Import User
+import { User } from './user.model';
+
+export interface ICustomerProfile {
+  id: string;
+  dni: string;
+  fullName: string;
+  address: string;
+}
 
 export interface IUserProfile extends User {
-  customerId: string;
-  dni: string;
-  address: string;
   role?: string;
+  customer?: ICustomerProfile;
 }

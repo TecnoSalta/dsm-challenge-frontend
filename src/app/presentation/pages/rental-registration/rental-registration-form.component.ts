@@ -8,11 +8,9 @@ import {
 } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CreateRentalUseCase } from '../../../application/use-cases/create-rental.use-case';
-import { GetAllCarsUseCase } from '../../../application/use-cases/get-all-cars.use-case';
 import { Car } from '../../../domain/models/car.model';
 import { Rental } from '../../../domain/models/rental.model';
 import { Observable, tap } from 'rxjs';
-import { AuthService } from '../../../application/services/auth.service';
 import { Customer } from '../../../domain/models/customer.model';
 
 // Angular Material Imports
@@ -94,10 +92,10 @@ export class RentalRegistrationFormComponent implements OnInit {
 
     // Pre-fill customer details if logged in as a customer
     const userProfile = this.authStore.userProfile();
-    if (this.authStore.isAuthenticated() && userProfile && userProfile.role === 'Customer') {
-      this.rentalForm.get('dni')?.setValue(userProfile.dni);
-      this.rentalForm.get('fullName')?.setValue(userProfile.fullName);
-      this.rentalForm.get('address')?.setValue(userProfile.address);
+    if (this.authStore.isAuthenticated() && userProfile && userProfile.role === 'Customer' && userProfile.customer) {
+      this.rentalForm.get('dni')?.setValue(userProfile.customer.dni);
+      this.rentalForm.get('fullName')?.setValue(userProfile.customer.fullName);
+      this.rentalForm.get('address')?.setValue(userProfile.customer.address);
       this.customerFound = true; // Mark as customer found
       // Disable fields
       this.rentalForm.get('dni')?.disable();
