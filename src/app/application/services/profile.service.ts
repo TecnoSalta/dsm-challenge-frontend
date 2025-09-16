@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 })
 export class ProfileService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl + '/profile';
+  private readonly apiUrl = environment.apiUrl + '/profile';
 
   getProfile(): Observable<IUserProfile> {
     return this.http.get<IUserProfile>(`${this.apiUrl}/me`);

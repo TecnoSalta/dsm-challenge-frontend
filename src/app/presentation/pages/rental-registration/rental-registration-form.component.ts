@@ -9,9 +9,7 @@ import {
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { RegisterRentalUseCase } from '../../../application/use-cases/register-rental.use-case';
 import { Car } from '../../../domain/models/car.model';
-import { Rental } from '../../../domain/models/rental.model';
 import { Observable,  } from 'rxjs';
-import { Customer } from '../../../domain/models/customer.model';
 import { RegisterRentalRequest } from '../../../domain/models/register-rental-request.model';
 
 // Angular Material Imports
@@ -54,13 +52,13 @@ export class RentalRegistrationFormComponent implements OnInit {
   isCarPreselected = false;
   customerFound = false;
 
-  private fb = inject(FormBuilder);
-  private registerRentalUseCase = inject(RegisterRentalUseCase);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private rentalStoreService = inject(RentalStoreService);
-  private getCustomerByDniUseCase = inject(GetCustomerByDniUseCase);
-  private authStore = inject(AuthStoreService); // Inject AuthStoreService
+  private readonly fb = inject(FormBuilder);
+  private readonly registerRentalUseCase = inject(RegisterRentalUseCase);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly rentalStoreService = inject(RentalStoreService);
+  private readonly getCustomerByDniUseCase = inject(GetCustomerByDniUseCase);
+  private readonly authStore = inject(AuthStoreService); // Inject AuthStoreService
 
   ngOnInit(): void {
     this.rentalForm = this.fb.group({
@@ -150,19 +148,21 @@ export class RentalRegistrationFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.rentalForm.valid) {
+      console.log('Register Rental button pressed. Form is valid.');
       const userProfile = this.authStore.userProfile(); // Use userProfile from AuthStoreService
-      const selectedCar = this.cars.find(car => car.id === this.rentalForm.value.carId);
 
-      if (userProfile && selectedCar) { // Check userProfile instead of user
+      if (userProfile && this.selectedCar) { // Check userProfile instead of user
         const registerRentalRequest: RegisterRentalRequest = {
           customerId: userProfile.customer?.id || '',
-          carId: selectedCar.id || '',
+          carId: this.selectedCar.id || '',
           startDate: this.rentalForm.value.startDate.toISOString().split('T')[0],
           endDate: this.rentalForm.value.endDate.toISOString().split('T')[0],
         };
 
+        console.log('Sending rental registration request:', registerRentalRequest);
         this.registerRentalUseCase.execute(registerRentalRequest).subscribe(
           (createdRental) => {
+            console.log('Rental registration successful. Response:', createdRental);
             this.rentalStoreService.setRentalFormState({
               carId: createdRental.car.id,
               startDate: createdRental.startDate.toISOString().split('T')[0],
@@ -177,6 +177,8 @@ export class RentalRegistrationFormComponent implements OnInit {
             console.error('Error creating rental:', error);
           }
         );
+      } else {
+        console.warn('Cannot send rental request: userProfile or selectedCar is missing.', { userProfile, selectedCar: this.selectedCar });
       }
     }
   }

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, of, tap, catchError } from 'rxjs'; // Added catchError
+import { Observable, of, tap, catchError } from 'rxjs'; 
 import { AuthRepository } from '../../domain/repositories/auth.repository';
 import { Credentials } from '../../domain/models/credentials.model';
 import { RegisterRequest } from '../../domain/models/register-request.model';
@@ -12,8 +12,8 @@ import { IUserProfile } from '../../domain/models/user-profile.model'; // Import
   providedIn: 'root',
 })
 export class AuthService {
-  private authStore = inject(AuthStoreService);
-  private authRepository = inject(AuthRepository);
+  private readonly authStore = inject(AuthStoreService);
+  private readonly authRepository = inject(AuthRepository);
 
   constructor() {
     if (this.authStore.accessToken()) {
@@ -47,7 +47,7 @@ export class AuthService {
     );
   }
 
-  getProfile(): Observable<IUserProfile | null> { // Changed return type to IUserProfile | null
+  getProfile(): Observable<IUserProfile | null> { 
     if (!this.authStore.accessToken()) {
       this.authStore.setUserProfile(null); // Clear profile if no access token
       return of(null);
@@ -66,7 +66,7 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return this.authRepository.isAuthenticated();
+    return this.authStore.isAuthenticated();
   }
 
   getRefreshToken(): string | null {

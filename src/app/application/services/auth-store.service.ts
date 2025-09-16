@@ -1,6 +1,8 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { IUserProfile } from '../../domain/models/user-profile.model'; // Import IUserProfile
-import { AuthResponse } from '../../domain/models/auth-response.model';
+import { AuthResponse } from 'src/app/domain/models/auth-response.model';
+import { GetProfileUseCase } from '../use-cases/get-profile.use-case';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthStoreService {
@@ -8,9 +10,11 @@ export class AuthStoreService {
   private readonly REFRESH_TOKEN_KEY = 'refreshToken';
   private readonly USER_PROFILE_KEY = 'authUser'; // Key for persisting user profile
 
-  private _accessToken = signal<string | null>(localStorage.getItem(this.ACCESS_TOKEN_KEY));
-  private _refreshToken = signal<string | null>(localStorage.getItem(this.REFRESH_TOKEN_KEY));
-  private _userProfile = signal<IUserProfile | null>(this.loadUserProfile()); // Initialize from localStorage
+  private getProfileUseCase = inject(GetProfileUseCase);
+
+  private readonly _accessToken = signal<string | null>(localStorage.getItem(this.ACCESS_TOKEN_KEY));
+  private readonly _refreshToken = signal<string | null>(localStorage.getItem(this.REFRESH_TOKEN_KEY));
+  private readonly _userProfile = signal<IUserProfile | null>(this.loadUserProfile()); // Initialize from localStorage
 
   accessToken = this._accessToken.asReadonly();
   refreshToken = this._refreshToken.asReadonly();
@@ -18,6 +22,8 @@ export class AuthStoreService {
 
   isAuthenticated = computed(() => !!this.accessToken() && !!this.userProfile()); // Computed signal for authentication status
   role = computed(() => this.userProfile()?.role || null); // Computed signal for user role
+  
+  
 
   setTokens(authResponse: AuthResponse) {
     localStorage.setItem(this.ACCESS_TOKEN_KEY, authResponse.token);
@@ -25,15 +31,17 @@ export class AuthStoreService {
     this._accessToken.set(authResponse.token);
     this._refreshToken.set(authResponse.refreshToken);
 
-    const userProfile: IUserProfile = {
-      id: authResponse.customerId || '',
-      email: '', // Email is not in AuthResponse, will be fetched by getProfile
-      fullName: '', // FullName is not in AuthResponse, will be fetched by getProfile
-      role: authResponse.role,
-      expiration: authResponse.expiration,
-      customer: authResponse.customerId ? { id: authResponse.customerId, dni: '', fullName: '', address: '' } : undefined,
-    };
-    this.setUserProfile(userProfile);
+    // Fetch the full user profile after setting tokens
+    this.getProfileUseCase.execute().subscribe({
+      next: (profile) => {
+        this.setUserProfile(profile);
+      },
+      error: (err) => {
+        console.error('Error fetching user profile:', err);
+        // Optionally clear tokens or handle error appropriately
+        this.clearTokens();
+      }
+    });
   }
 
   setUserProfile(profile: IUserProfile | null) {

@@ -6,7 +6,6 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { CarRepository } from './app/domain/repositories/car.repository';
 import { AuthRepository } from './app/domain/repositories/auth.repository';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { AuthService } from './app/application/services/auth.service';
 import { authInterceptor } from './app/application/interceptors/auth.interceptor'; // Import authInterceptor
 import { httpErrorInterceptor } from './app/application/interceptors/http-error.interceptor';
 import { CarApiService } from './app/infrastructure/repositories/car-api.service';

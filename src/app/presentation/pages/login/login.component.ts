@@ -37,8 +37,8 @@ export class LoginComponent {
 
   constructor() {
     this.loginForm = this.fb.group({
-      email: ['test@test.com', [Validators.required, Validators.email]],
-      password: ['password', [Validators.required]],
+      email: ['ct@ct.com', [Validators.required, Validators.email]],
+      password: ['12341234', [Validators.required]],
     });
   }
 
@@ -59,9 +59,11 @@ export class LoginComponent {
       )
       .subscribe({
         next: () => {
+          console.log('Login successful');
           this.router.navigate(['/']); // Navigate to Home page on successful login
         },
         error: (err) => {
+          console.error('Login failed', err);
           this.error = err.message;
         },
       });

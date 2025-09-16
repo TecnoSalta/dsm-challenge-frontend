@@ -7,7 +7,7 @@ import { Credentials } from '../../domain/models/credentials.model';
   providedIn: 'root',
 })
 export class LoginUseCase {
-  private authRepository = inject(AuthRepository);
+  private readonly authRepository = inject(AuthRepository);
 
   execute(credentials: Credentials): Observable<{ token: string }> {
     return this.authRepository.login(credentials);

@@ -46,12 +46,12 @@ export class HomeComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  private getCarMetadataUseCase = inject(GetCarMetadataUseCase);
-  private getAvailableCarsUseCase = inject(GetAvailableCarsUseCase);
-  private router = inject(Router);
-  private rentalStoreService = inject(RentalStoreService);
+  private readonly getCarMetadataUseCase = inject(GetCarMetadataUseCase);
+  private readonly getAvailableCarsUseCase = inject(GetAvailableCarsUseCase);
+  private readonly router = inject(Router);
+  private readonly rentalStoreService = inject(RentalStoreService);
 
-  private fb = inject(FormBuilder);
+  private readonly fb = inject(FormBuilder);
 
   constructor() {
     this.searchForm = this.fb.group({

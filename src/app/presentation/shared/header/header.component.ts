@@ -16,10 +16,10 @@ import { AuthStoreService } from '../../../application/services/auth-store.servi
 export class HeaderComponent {
   public authService = inject(AuthService); // Keep AuthService for logout method
   public authStore = inject(AuthStoreService); // Inject AuthStoreService
-  private router = inject(Router);
+  private readonly router = inject(Router);
 
   onLogout(): void {
-    this.authService.logout(); // AuthService.logout() now calls authStore.clearTokens()
+    this.authService.logout(); 
     this.router.navigate(['/login']);
   }
 }

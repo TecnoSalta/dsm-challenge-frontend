@@ -1,15 +1,15 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthRepository } from '../../domain/repositories/auth.repository';
-import { User } from '../../domain/models/user.model';
+import { IUserProfile } from 'src/app/domain/models/user-profile.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GetProfileUseCase {
-  private authRepository = inject(AuthRepository);
+  private readonly authRepository = inject(AuthRepository);
 
-  execute(): Observable<User> {
+  execute(): Observable<IUserProfile | null> {
     return this.authRepository.getProfile();
   }
 }
