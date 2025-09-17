@@ -1,0 +1,14 @@
+<div [formGroup]="verifyForm" class="customer-details-form">
+  <mat-form-field appearance="fill">
+    <mat-label>Customer Name</mat-label>
+    <input matInput formControlName="customerName" required>
+    <mat-error *ngIf="verifyForm.get('customerName')?.hasError('required')">Customer Name is required</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Customer Email</mat-label>
+    <input matInput formControlName="customerEmail" required email>
+    <mat-error *ngIf="verifyForm.get('customerEmail')?.hasError('required')">Customer Email is required</mat-error>
+    <mat-error *ngIf="verifyForm.get('customerEmail')?.hasError('email')">Invalid email format</mat-error>
+  </mat-form-field>
+</div>

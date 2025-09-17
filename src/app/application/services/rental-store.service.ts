@@ -1,48 +1,33 @@
 import { Injectable, signal } from '@angular/core';
-import { Car } from '../../domain/models/car.model';
-import { Customer } from '../../domain/models/customer.model'; // Import Customer
+import { Car } from 'src/app/domain/models/car.model';
+import { Customer } from 'src/app/domain/models/customer.model';
 
-export interface RentalFormState {
-  carId: string | null;
-  startDate: string | null;
-  endDate: string | null;
-  selectedCar: Car | null;
-  customer: Customer | null; // New property
-  id: string | null; // New property for rental ID
-  status: string | null; // New property for rental status
-}
-
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class RentalStoreService {
-  private rentalFormState = signal<RentalFormState>({
-    carId: null,
-    startDate: null,
-    endDate: null,
-    selectedCar: null,
-    customer: null, // Initialize new property
-    id: null, // Initialize new property
-    status: null, // Initialize new property
-  });
+  // signals
+  startDate = signal<Date | null>(null);
+  endDate = signal<Date | null>(null);
+  selectedCar = signal<Car | null>(null);
+  customer = signal<Customer | null>(null);
 
-  setRentalFormState(state: Partial<RentalFormState>): void {
-    this.rentalFormState.update(current => ({ ...current, ...state }));
+  // metodos de acciones
+  setDates(start: Date, end: Date) {
+    this.startDate.set(start);
+    this.endDate.set(end);
   }
 
-  getRentalFormState() {
-    return this.rentalFormState.asReadonly();
+  setCar(car: Car) {
+    this.selectedCar.set(car);
   }
 
-  clearRentalFormState(): void {
-    this.rentalFormState.set({
-      carId: null,
-      startDate: null,
-      endDate: null,
-      selectedCar: null,
-      customer: null,
-      id: null,
-      status: null,
-    });
+  setCustomer(cust: Customer) {
+    this.customer.set(cust);
+  }
+
+  resetStore() {
+    this.startDate.set(null);
+    this.endDate.set(null);
+    this.selectedCar.set(null);
+    this.customer.set(null);
   }
 }

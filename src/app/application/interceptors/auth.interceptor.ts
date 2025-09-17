@@ -30,7 +30,11 @@ export function authInterceptor(request: HttpRequest<any>, next: HttpHandlerFn):
       const accessToken = authStore.accessToken();
       const refreshToken = authStore.refreshToken();
 
-      if (accessToken && refreshToken && accessToken.length > 0 && refreshToken.length > 0) {
+      console.log('Auth Interceptor: Attempting to refresh token.');
+      console.log('Auth Interceptor: Access Token value:', accessToken);
+      console.log('Auth Interceptor: Refresh Token value:', refreshToken);
+
+      if (accessToken && refreshToken) {
         const refreshRequest: RefreshTokenRequest = {
           accessToken: accessToken,
           refreshToken: refreshToken
@@ -51,10 +55,7 @@ export function authInterceptor(request: HttpRequest<any>, next: HttpHandlerFn):
           })
         );
       } else {
-        console.error('Auth Interceptor: Cannot refresh. Tokens are null or empty.', {
-          accessTokenValue: accessToken,
-          refreshTokenValue: refreshToken
-        });
+        console.error('Auth Interceptor: Cannot refresh. Tokens are null or empty.');
         authStore.clearTokens();
         authService.logout();
         router.navigate(['/login']);
@@ -70,12 +71,13 @@ export function authInterceptor(request: HttpRequest<any>, next: HttpHandlerFn):
       );
     }
   };
+
   const token = authStore.accessToken();
   if (token) {
     request = addToken(request, token);
   }
 
-  return next(request).pipe(catchError(error => { // Fixed: call next directly
+  return next(request).pipe(catchError(error => {
     if (error instanceof HttpErrorResponse && error.status === 401) {
       return handle401Error(request, next);
     }

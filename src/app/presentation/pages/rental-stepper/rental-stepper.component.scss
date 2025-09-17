@@ -1,0 +1,45 @@
+:host {
+  display: block;
+  padding: 16px;
+  background-color: #f5f5f5; // Background color
+}
+
+.mat-horizontal-stepper-content {
+  padding: 16px; // Consistent spacing
+}
+
+.mat-stepper-horizontal {
+  background-color: #ffffff; // Surface color
+  border-radius: 8px; // Border-radius for cards
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.1); // Subtle shadow
+}
+
+.stepper-actions {
+  margin-top: 16px; // Consistent spacing
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+// Material UI button color overrides
+.mat-button.mat-primary,
+.mat-raised-button.mat-primary {
+  background-color: #1976d2; // Primary color
+  color: #ffffff;
+}
+
+.mat-button.mat-primary:hover,
+.mat-raised-button.mat-primary:hover {
+  background-color: #1565c0; // Primary Dark for hover
+}
+
+.mat-button.mat-accent,
+.mat-raised-button.mat-accent {
+  background-color: #ff6e00; // Secondary color
+  color: #ffffff;
+}
+
+.mat-button.mat-accent:hover,
+.mat-raised-button.mat-accent:hover {
+  background-color: #ff9100; // Secondary Light for hover
+}

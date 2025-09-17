@@ -1,0 +1,60 @@
+<mat-horizontal-stepper [linear]="true" #stepper>
+  <!-- Paso 1: Selección de vehículo -->
+  <mat-step [stepControl]="searchForm">
+    <form [formGroup]="searchForm">
+      <ng-template matStepLabel>Choose Vehicle</ng-template>
+      
+      <app-rental-search-step 
+        [searchForm]="searchForm" 
+        [(selectedCar)]="selectedCar">
+      </app-rental-search-step>
+
+      <div class="stepper-actions">
+        <button mat-button 
+                matStepperNext 
+                [disabled]="searchForm.invalid || !selectedCar">
+          Next
+        </button>
+      </div>
+    </form>
+  </mat-step>
+
+  <!-- Paso 2: Verificación -->
+  <mat-step [stepControl]="verifyForm">
+    <form [formGroup]="verifyForm">
+      <ng-template matStepLabel>Verify Data</ng-template>
+      
+      <app-rental-verify-step 
+        [verifyForm]="verifyForm" 
+        [selectedCar]="selectedCar"
+        [(selectedCustomer)]="selectedCustomer" 
+        #rentalVerifyStep>
+      
+      </app-rental-verify-step>
+
+      <div class="stepper-actions">
+        <button mat-button matStepperPrevious>Previous</button>
+        <button mat-raised-button color="primary"
+                [disabled]="!verifyForm.valid"
+                (click)="confirmRental(stepper)">
+          Confirm
+        </button>
+      </div>
+    </form>
+  </mat-step>
+
+  <!-- Paso 3: Confirmación -->
+  <mat-step>
+    <ng-template matStepLabel>Confirmation</ng-template>
+    
+    <app-rental-success-step 
+      [selectedCar]="selectedCar"
+      [selectedCustomer]="selectedCustomer"
+      [rentalResponse]="rentalResponse">
+    </app-rental-success-step>
+
+    <div class="stepper-actions">
+      <button mat-button routerLink="/">Back to Home</button>
+    </div>
+  </mat-step>
+</mat-horizontal-stepper>

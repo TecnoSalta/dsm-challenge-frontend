@@ -15,6 +15,7 @@ export class CustomerApiService implements CustomerRepository {
         dni: '123456789',
         fullName: 'Mock Customer',
         address: '123 Mock Street',
+        email: 'mock.customer@example.com',
       });
     }
     return of(undefined);

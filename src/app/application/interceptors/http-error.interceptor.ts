@@ -39,11 +39,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (
             errorMessage = typeof error.error === 'string' ? error.error : error.error?.detail || 'Invalid data';
             console.error(errorMessage);
             break;
-          case 401:
-            errorMessage = 'Session expired. Redirecting to login.';
-            console.error(errorMessage);
-            router.navigate(['/login']);
-            break;
+          
           case 403:
             errorMessage = 'You do not have permission for this action.';
             console.error(errorMessage);
