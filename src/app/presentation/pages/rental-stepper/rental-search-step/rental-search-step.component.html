@@ -84,10 +84,3 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectCar(row)" class="car-row"></tr>
   </table>
 </div>
-
-<p>(*) If RESERVED within the period &rarr; not selectable.</p>
-
-<div class="action-buttons">
-  <button mat-raised-button color="accent" [disabled]="!selectedCar">Reserve Selected Car</button>
-  <button mat-raised-button color="warn">Modify Existing Reservation</button>
-</div>

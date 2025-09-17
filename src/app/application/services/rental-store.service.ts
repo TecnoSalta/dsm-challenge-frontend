@@ -1,26 +1,14 @@
 import { Injectable, signal } from '@angular/core';
-
-export interface CarDto {
-  id: string;
-  licensePlate: string;
-  type: string;
-  model: string;
-  dailyRate: number;
-  status: string;
-}
-
-interface CustomerDto {
-  name: string;
-  email: string;
-}
+import { Car } from 'src/app/domain/models/car.model';
+import { Customer } from 'src/app/domain/models/customer.model';
 
 @Injectable({ providedIn: 'root' })
 export class RentalStoreService {
   // signals
   startDate = signal<Date | null>(null);
   endDate = signal<Date | null>(null);
-  selectedCar = signal<CarDto | null>(null);
-  customer = signal<CustomerDto | null>(null);
+  selectedCar = signal<Car | null>(null);
+  customer = signal<Customer | null>(null);
 
   // metodos de acciones
   setDates(start: Date, end: Date) {
@@ -28,11 +16,11 @@ export class RentalStoreService {
     this.endDate.set(end);
   }
 
-  setCar(car: CarDto) {
+  setCar(car: Car) {
     this.selectedCar.set(car);
   }
 
-  setCustomer(cust: CustomerDto) {
+  setCustomer(cust: Customer) {
     this.customer.set(cust);
   }
 

@@ -1,4 +1,3 @@
-
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -10,10 +9,13 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class RentalApiService {
-  private apiUrl = environment.apiUrl + '/rentals';
+  private apiUrl = environment.apiUrl + '/Rentals'; // Fixed endpoint
+
   private http = inject(HttpClient);
 
+  // Remove the conflicting create() method or keep it if needed for other purposes
   create(rental: Partial<Rental>): Observable<Rental> {
+    console.log('API URL:', this.apiUrl);
     return this.http.post<Rental>(this.apiUrl, rental);
   }
 
@@ -33,6 +35,7 @@ export class RentalApiService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
+  // This is the main method that matches your backend endpoint
   registerRental(request: RegisterRentalRequest): Observable<Rental> {
     return this.http.post<Rental>(this.apiUrl, request);
   }

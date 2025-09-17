@@ -3,4 +3,5 @@ export interface Customer {
   dni: string;
   fullName: string;
   address: string;
+  email: string;
 }

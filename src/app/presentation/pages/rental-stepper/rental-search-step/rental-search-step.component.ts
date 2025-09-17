@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,15 +11,7 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { RentalStoreService } from '../../../../application/services/rental-store.service';
 import { CarsService } from '../../../../application/services/cars.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-
-interface Car {
-  id: string;
-  licensePlate: string;
-  type: string;
-  model: string;
-  dailyRate: number;
-  status: string;
-}
+import { Car } from 'src/app/domain/models/car.model';
 
 @Component({
   selector: 'app-rental-search-step',
@@ -41,7 +33,9 @@ interface Car {
 })
 export class RentalSearchStepComponent implements OnInit {
   @Input() searchForm!: FormGroup;
-
+  @Input() selectedCar: Car | null = null;
+  @Output() selectedCarChange = new EventEmitter<Car>();
+  
   carTypes: string[] = [];
   carModels: string[] = [];
 
@@ -49,11 +43,10 @@ export class RentalSearchStepComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'licensePlate', 'type', 'model', 'dailyRate', 'status'];
 
+  
   constructor(private rentalStore: RentalStoreService, private carsService: CarsService, private http: HttpClient) {}
 
-  get selectedCar(): Car | null {
-    return this.rentalStore.selectedCar();
-  }
+ 
 
   ngOnInit(): void {
     this.getCarMetadata();
@@ -82,10 +75,11 @@ export class RentalSearchStepComponent implements OnInit {
       });
     }
   }
+  
 
-  // Method to select a car (to be called when a car is selected from the table)
   selectCar(car: Car) {
-    this.rentalStore.setCar(car);
+    this.selectedCar = car;
+    this.selectedCarChange.emit(car);
     console.log('Selected car:', car);
   }
 }

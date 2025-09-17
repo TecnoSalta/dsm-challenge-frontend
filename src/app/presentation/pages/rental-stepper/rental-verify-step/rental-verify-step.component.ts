@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RentalStoreService } from '../../../../application/services/rental-store.service';
-import { RentalsService } from '../../../../application/services/rentals.service';
+import { Car } from 'src/app/domain/models/car.model';
+import { Customer } from 'src/app/domain/models/customer.model';
 
 @Component({
   selector: 'app-rental-verify-step',
@@ -18,43 +19,55 @@ import { RentalsService } from '../../../../application/services/rentals.service
   templateUrl: './rental-verify-step.component.html',
   styleUrls: ['./rental-verify-step.component.scss']
 })
-export class RentalVerifyStepComponent {
+export class RentalVerifyStepComponent implements OnInit {
   @Input() verifyForm!: FormGroup;
+  @Input() selectedCar: Car | null = null;
+  @Input() selectedCustomer: Customer | null = null;
+  @Output() selectedCustomerChange = new EventEmitter<Customer>();
 
-  constructor(private rentalStore: RentalStoreService, private rentalsService: RentalsService) {}
+  constructor(private rentalStore: RentalStoreService) { }
 
   ngOnInit() {
+    const authUserString = localStorage.getItem('authUser');
+    if (authUserString) {
+      try {
+        const authUser = JSON.parse(authUserString);
+        if (authUser && authUser.customer) {
+          this.verifyForm.patchValue({
+            customerName: authUser.customer.fullName,
+            customerEmail: authUser.email
+          });
+          const customer: Customer = {
+            id: authUser.customer.id,
+            dni: authUser.customer.dni || '',
+            fullName: authUser.customer.fullName,
+            address: authUser.customer.address || '',
+            email: authUser.email,
+          };
+          Promise.resolve().then(() => {
+            this.selectedCustomerChange.emit(customer);
+            this.rentalStore.setCustomer(customer);
+          });
+        }
+      } catch (e) {
+        console.error('Error parsing authuser from localStorage', e);
+      }
+    }
+
     this.verifyForm.valueChanges.subscribe(value => {
       if (this.verifyForm.valid) {
-        this.rentalStore.setCustomer(value);
+        const customer: Customer = {
+          id: this.rentalStore.customer()?.id || '',
+          dni: this.rentalStore.customer()?.dni || '',
+          fullName: value.customerName,
+          address: this.rentalStore.customer()?.address || '',
+          email: value.customerEmail,
+        };
+        Promise.resolve().then(() => {
+          this.selectedCustomerChange.emit(customer);
+          this.rentalStore.setCustomer(customer);
+        });
       }
     });
-  }
-
-  confirmRental() {
-    const selectedCar = this.rentalStore.selectedCar();
-    const customer = this.rentalStore.customer();
-    const startDate = this.rentalStore.startDate();
-    const endDate = this.rentalStore.endDate();
-
-    if (selectedCar && customer && startDate && endDate) {
-      const rentalRequest = {
-        carId: selectedCar.id,
-        startDate: startDate.toISOString().split('T')[0],
-        endDate: endDate.toISOString().split('T')[0],
-        customerName: customer.name,
-        customerEmail: customer.email,
-      };
-
-      this.rentalsService.createRental(rentalRequest).subscribe({
-        next: (response) => {
-          console.log('Rental created successfully:', response);
-          // Optionally, navigate to success step or update store with rental confirmation
-        },
-        error: (error) => {
-          console.error('Error creating rental:', error);
-        }
-      });
-    }
   }
 }

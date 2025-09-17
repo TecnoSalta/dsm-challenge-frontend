@@ -2,15 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-
-interface CarDto {
-  id: string;
-  licensePlate: string;
-  type: string;
-  model: string;
-  dailyRate: number;
-  status: string;
-}
+import { Car } from 'src/app/domain/models/car.model';
 
 @Injectable({ providedIn: 'root' })
 export class CarsService {
@@ -18,7 +10,7 @@ export class CarsService {
 
   constructor(private http: HttpClient) {}
 
-  getAvailable(startDate: string, endDate: string, type?: string, model?: string): Observable<CarDto[]> {
+  getAvailable(startDate: string, endDate: string, type?: string, model?: string): Observable<Car[]> {
     let params = new HttpParams()
       .set('startDate', startDate)
       .set('endDate', endDate);
@@ -30,6 +22,6 @@ export class CarsService {
       params = params.set('carModel', model);
     }
 
-    return this.http.get<CarDto[]>(`${this.apiUrl}/available`, { params });
+    return this.http.get<Car[]>(`${this.apiUrl}/available`, { params });
   }
 }

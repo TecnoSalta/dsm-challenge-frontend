@@ -3,10 +3,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './application/guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-
-  // Home principal
-  { path: 'home', loadComponent: () => import('./presentation/pages/home/home.component').then(m => m.HomeComponent) },
+  { path: '', redirectTo: 'rental', pathMatch: 'full' },
 
   // Flujo de renta (stepper en un solo contenedor)
   { path: 'rental', loadComponent: () => import('./presentation/pages/rental-stepper/rental-stepper.component').then(m => m.RentalStepperComponent) },
@@ -19,5 +16,5 @@ export const routes: Routes = [
   { path: 'register', loadComponent: () => import('./presentation/pages/register/register.component').then(m => m.RegisterComponent) },
   { path: 'profile', loadComponent: () => import('./presentation/pages/profile/profile.component').then(m => m.ProfileComponent), canActivate: [authGuard] },
 
-  { path: '**', redirectTo: 'home' }
+  { path: '**', redirectTo: 'rental' }
 ];

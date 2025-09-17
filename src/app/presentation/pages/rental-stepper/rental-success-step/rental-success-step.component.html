@@ -8,7 +8,7 @@
     <p><strong>ID:</strong> {{ selectedCar.id }}</p>
     <p><strong>Type:</strong> {{ selectedCar.type }}</p>
     <p><strong>Model:</strong> {{ selectedCar.model }}</p>
-    <p><strong>Plate:</strong> {{ selectedCar.plate }}</p>
+    <p><strong>Plate:</strong> {{ selectedCar.licensePlate }}</p>
   </div>
 
   <div *ngIf="startDate && endDate" class="details-section">
@@ -17,9 +17,15 @@
     <p><strong>End Date:</strong> {{ endDate | date:'mediumDate' }}</p>
   </div>
 
-  <div *ngIf="customer" class="details-section">
+  <div *ngIf="selectedCustomer" class="details-section">
     <h3>Customer Details:</h3>
-    <p><strong>Name:</strong> {{ customer.name }}</p>
-    <p><strong>Email:</strong> {{ customer.email }}</p>
+    <p><strong>Name:</strong> {{ selectedCustomer.fullName }}</p>
+    <p><strong>Email:</strong> {{ selectedCustomer.email }}</p>
+  </div>
+
+  <div *ngIf="rentalResponse" class="details-section">
+    <h3>Rental Confirmation:</h3>
+    <p><strong>Rental ID:</strong> {{ rentalResponse.id }}</p>
+    <p><strong>Status:</strong> {{ rentalResponse.status }}</p>
   </div>
 </div>

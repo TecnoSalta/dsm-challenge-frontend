@@ -39,6 +39,7 @@ export class CarApiService extends CarRepository {
   }
 
   getCarMetadata(): Observable<CarMetadata[]> {
+    console.error('Fetching car metadata from:', `${this.apiUrl}/metadata`);
     return this.http.get<CarMetadata[]>(`${this.apiUrl}/metadata`);
   }
 
