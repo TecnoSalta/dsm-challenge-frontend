@@ -23,6 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { RentalStoreService } from '../../../application/services/rental-store.service';
 import { AuthStoreService } from '../../../application/services/auth-store.service'; // Import AuthStoreService
+import { CustomerDetailsFormComponent } from '../../../shared/components/customer-details-form/customer-details-form.component';
 
 @Component({
   selector: 'app-rental-registration-form',
@@ -41,12 +42,11 @@ import { AuthStoreService } from '../../../application/services/auth-store.servi
     MatNativeDateModule,
     MatSelectModule,
     MatDividerModule,
+    CustomerDetailsFormComponent,
   ],
 })
 export class RentalRegistrationFormComponent implements OnInit {
   rentalForm!: FormGroup;
-  // private _cars = signal<Car[]>([]); // REMOVED
-  // cars = this._cars.asReadonly(); // REMOVED
 
   private _selectedCar = signal<Car | undefined>(undefined);
   selectedCar = this._selectedCar.asReadonly();
@@ -111,8 +111,7 @@ export class RentalRegistrationFormComponent implements OnInit {
     
   }
 
-  onDniChange(): void {
-    const dni = this.rentalForm.get('dni')?.value;
+  onDniChange(dni: string): void {
     if (!dni) {
       this.rentalForm.get('fullName')?.setValue('');
       this.rentalForm.get('address')?.setValue('');

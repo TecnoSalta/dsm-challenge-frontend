@@ -39,30 +39,11 @@
 
         <mat-divider></mat-divider>
 
-        <h3>Customer Details</h3>
-        <div class="form-group">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>DNI</mat-label>
-            <input matInput formControlName="dni" (blur)="onDniChange()">
-            <mat-error *ngIf="rentalForm.get('dni')?.hasError('required')">DNI is required</mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="form-group">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Full Name</mat-label>
-            <input matInput formControlName="fullName" [readonly]="customerFound()">
-            <mat-error *ngIf="rentalForm.get('fullName')?.hasError('required')">Full Name is required</mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="form-group">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Address</mat-label>
-            <input matInput formControlName="address" [readonly]="customerFound()">
-            <mat-error *ngIf="rentalForm.get('address')?.hasError('required')">Address is required</mat-error>
-          </mat-form-field>
-        </div>
+        <app-customer-details-form
+          [form]="rentalForm"
+          [customerFound]="customerFound()"
+          (dniChange)="onDniChange($event)">
+        </app-customer-details-form>
 
         <button mat-raised-button color="primary" type="submit" [disabled]="!rentalForm.valid">Register Rental</button>
       </form>
