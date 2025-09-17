@@ -14,12 +14,15 @@ import { RentalApiRepository } from './app/infrastructure/repositories/rental-ap
 import { CUSTOMER_REPOSITORY } from './app/domain/repositories/customer.repository';
 import { CustomerApiService } from './app/infrastructure/repositories/customer-api.service';
 import { AuthApiRepository } from './app/infrastructure/repositories/auth-api.repository';
+import { importProvidersFrom } from '@angular/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideAnimations(),
     provideHttpClient(withInterceptors([authInterceptor, httpErrorInterceptor])), // Use authInterceptor
+    importProvidersFrom(MatSnackBarModule),
     { provide: CarRepository, useClass: CarApiService },
     { provide: AuthRepository, useClass: AuthApiRepository },
     { provide: RentalRepository, useClass: RentalApiRepository },
