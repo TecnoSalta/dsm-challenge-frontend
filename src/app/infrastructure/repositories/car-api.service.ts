@@ -23,7 +23,14 @@ export class CarApiService extends CarRepository {
 
   getAll(): Observable<Car[]> {
     // Assuming a backend endpoint for all cars if needed
-    return this.http.get<Car[]>(this.apiUrl).pipe(map(cars => cars || []));
+    return this.http.get<Car[]>(this.apiUrl).pipe(map((cars) => cars || []));
+  }
+
+  getNextCarServices(): Observable<Car[]> {
+    // Assuming a backend endpoint for all cars if needed
+    return this.http
+      .get<Car[]>(`${this.apiUrl}/NextCarServices`)
+      .pipe(map((cars) => cars || []));
   }
 
   getById(id: string): Observable<Car | undefined> {
@@ -36,6 +43,9 @@ export class CarApiService extends CarRepository {
   }
 
   getAvailableCars(request: AvailabilityRequest): Observable<AvailableCar[]> {
-    return this.http.get<AvailableCar[]>(`${this.availabilityUrl}/disponibilidad`, { params: request as any });
+    return this.http.get<AvailableCar[]>(
+      `${this.availabilityUrl}/disponibilidad`,
+      { params: request as any }
+    );
   }
 }

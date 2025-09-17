@@ -1,0 +1,44 @@
+<h1>Servicios de las próximas 2 semanas</h1>
+
+<div class="table-container">
+    <table class="car-table">
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Modelo</th>
+                <th>Fecha de Servicio</th>
+                <th>Duración (días)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Iteramos sobre cada carro -->
+            <ng-container *ngFor="let car of cars">
+                <!-- Si el carro tiene servicios -->
+                <ng-container *ngIf="car.services && car.services.length > 0">
+                    <!-- Iteramos sobre cada servicio del carro -->
+                    <tr *ngFor="let service of car.services; let i = index">
+                        <!-- Mostramos tipo y modelo solo en la primera fila de cada carro -->
+                        <td *ngIf="i === 0" [attr.rowspan]="car.services.length">{{ car.type }}</td>
+                        <td *ngIf="i === 0" [attr.rowspan]="car.services.length">{{ car.model }}</td>
+
+                        <!-- Datos del servicio -->
+                        <td>{{ formatDate(service.date) }}</td>
+                        <td>{{ service.durationDays }}</td>
+                    </tr>
+                </ng-container>
+
+                <!-- Si el carro no tiene servicios -->
+                <tr *ngIf="!car.services || car.services.length === 0">
+                    <td>{{ car.type }}</td>
+                    <td>{{ car.model }}</td>
+                    <td colspan="2" class="no-service">Sin servicios registrados</td>
+                </tr>
+            </ng-container>
+
+            <!-- Mensaje si no hay carros -->
+            <tr *ngIf="cars.length === 0">
+                <td colspan="4" class="no-data">No hay carros para mostrar</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
