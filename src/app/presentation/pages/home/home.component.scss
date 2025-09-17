@@ -63,10 +63,6 @@ mat-card {
   transition: transform 0.2s ease-in-out;
 }
 
-mat-card:hover {
-  transform: translateY(-5px);
-}
-
 mat-card-header {
   padding-bottom: 0;
 }
