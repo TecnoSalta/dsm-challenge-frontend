@@ -24,23 +24,10 @@
         </div>
 
         <div class="form-group">
-          <ng-container *ngIf="isCarPreselected(); else carSelectionDropdown">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Selected Car</mat-label>
-              <input matInput [value]="selectedCar()?.make + ' ' + selectedCar()?.model + ' - $' + selectedCar()?.dailyRate + '/day'" readonly>
-            </mat-form-field>
-          </ng-container>
-          <ng-template #carSelectionDropdown>
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Car</mat-label>
-              <mat-select formControlName="carId" (selectionChange)="onCarSelectionChange()">
-                <mat-option *ngFor="let car of cars()" [value]="car.id">
-                  {{ car.make }} {{ car.model }} - ${{ car.dailyRate }}/day
-                </mat-option>
-              </mat-select>
-              <mat-error *ngIf="rentalForm.get('carId')?.hasError('required')">Car selection is required</mat-error>
-            </mat-form-field>
-          </ng-template>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Selected Car</mat-label>
+            <input matInput [value]="selectedCar()?.make + ' ' + selectedCar()?.model + ' - $' + selectedCar()?.dailyRate + '/day'" readonly>
+          </mat-form-field>
         </div>
 
         <div *ngIf="selectedCar() && !isCarPreselected()" class="selected-car-details">

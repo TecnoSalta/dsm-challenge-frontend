@@ -123,10 +123,10 @@ export class RentalRegistrationFormComponent implements OnInit {
     
   }
 
-  onCarSelectionChange(): void {
-    const selectedCarId = this.rentalForm.get('carId')?.value;
-    // this._selectedCar.set(this.cars().find(car => car.id === selectedCarId)); // REMOVED
-  }
+  // REMOVED: onCarSelectionChange(): void {
+  // REMOVED:   const selectedCarId = this.rentalForm.get('carId')?.value;
+  // REMOVED:   // this._selectedCar.set(this.cars().find(car => car.id === selectedCarId));
+  // REMOVED: }
 
   onDniChange(): void {
     const dni = this.rentalForm.get('dni')?.value;
