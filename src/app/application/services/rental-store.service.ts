@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 
-interface CarDto {
-  id: number;
+export interface CarDto {
+  id: string;
   type: string;
   model: string;
   plate: string;

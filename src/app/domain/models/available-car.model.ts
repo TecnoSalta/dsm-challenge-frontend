@@ -3,4 +3,6 @@ export interface AvailableCar {
   type: string;
   model: string;
   dailyRate: number;
+  plate: string;
+  status: string;
 }

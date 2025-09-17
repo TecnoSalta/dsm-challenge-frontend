@@ -12,7 +12,7 @@ import { RentalStoreService } from '../../../../application/services/rental-stor
 import { CarsService } from '../../../../application/services/cars.service';
 
 interface Car {
-  id: number;
+  id: string; // Changed from number to string
   type: string;
   model: string;
   plate: string;

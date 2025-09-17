@@ -19,6 +19,7 @@ import { AvailabilityRequest } from '../../../domain/models/availability-request
 import { finalize } from 'rxjs';
 import { RentalStoreService } from '../../../application/services/rental-store.service';
 import { Car } from '../../../domain/models/car.model';
+import { CarDto } from '../../../application/services/rental-store.service'; // Import CarDto
 
 @Component({
   selector: 'app-home',
@@ -140,24 +141,19 @@ export class HomeComponent implements OnInit {
     const endDate = this.searchForm.get('endDate')?.value;
 
     if (selectedAvailableCar && startDate && endDate) {
-      const carToRent: Car = {
+      const carToRent: CarDto = {
         id: selectedAvailableCar.id,
         type: selectedAvailableCar.type,
         model: selectedAvailableCar.model,
-        dailyRate: selectedAvailableCar.dailyRate,
-        services: [],
+        plate: selectedAvailableCar.plate,
+        status: selectedAvailableCar.status,
       };
 
-      this.rentalStoreService.setRentalFormState({
-        carId: carToRent.id,
-        startDate: startDate.toISOString().split('T')[0],
-        endDate: endDate.toISOString().split('T')[0],
-        selectedCar: carToRent,
-      });
-      this.router.navigate(['/rental-registration']);
+      this.rentalStoreService.setDates(startDate, endDate);
+      this.rentalStoreService.setCar(carToRent);
+      this.router.navigate(['/rental']);
     } else {
       console.error('Could not rent car: missing car details or dates.');
     }
   }
 }
-

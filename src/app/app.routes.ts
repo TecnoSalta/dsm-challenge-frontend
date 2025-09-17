@@ -18,8 +18,6 @@ export const routes: Routes = [
   { path: 'login', loadComponent: () => import('./presentation/pages/login/login.component').then(m => m.LoginComponent) },
   { path: 'register', loadComponent: () => import('./presentation/pages/register/register.component').then(m => m.RegisterComponent) },
   { path: 'profile', loadComponent: () => import('./presentation/pages/profile/profile.component').then(m => m.ProfileComponent), canActivate: [authGuard] },
-  { path: 'rental-registration', loadComponent: () => import('./presentation/pages/rental-registration/rental-registration-form.component').then(m => m.RentalRegistrationFormComponent) },
-  { path: 'rental-confirmation', loadComponent: () => import('./presentation/pages/rental-confirmation/rental-confirmation.component').then(m => m.RentalConfirmationComponent) },
 
   { path: '**', redirectTo: 'home' }
 ];

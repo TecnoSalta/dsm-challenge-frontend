@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 interface CarDto {
-  id: number;
+  id: string; // Changed from number to string
   type: string;
   model: string;
   plate: string;

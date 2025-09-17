@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 interface RentalRequestDto {
-  carId: number;
+  carId: string; // Changed from number to string
   startDate: string;
   endDate: string;
   customerName: string;
@@ -12,7 +12,7 @@ interface RentalRequestDto {
 
 interface RentalResponseDto {
   id: number;
-  carId: number;
+  carId: string; // Changed from number to string
   startDate: string;
   endDate: string;
   customerName: string;
