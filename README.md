@@ -45,7 +45,7 @@ Based on the proposed **Backend** develop a **SPA (Single Page Application)** us
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/TecnoSalta/dsm-challenge-frontend
    ```
 
 2. **Install dependencies**
