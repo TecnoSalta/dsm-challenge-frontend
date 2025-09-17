@@ -1,0 +1,31 @@
+<!-- car-rental-stats.component.html -->
+<div class="stats-container">
+  <div class="header">
+    <h2>Estadísticas de Rentas</h2>
+    <div class="kpi-card" *ngIf="mostRentedCarType !== 'No hay datos'">
+      <span>Tipo más rentado: <strong>{{ mostRentedCarType }}</strong></span>
+    </div>
+  </div>
+
+  <google-chart
+    [type]="chartType"
+    [data]="chartData"
+    [options]="chartOptions"
+    [width]="100"
+    [height]="150">
+  </google-chart>
+
+  <div class="simple-table" *ngIf="rentalData.length > 0">
+    <h3>Resumen por tipo</h3>
+    <div class="table-row header">
+      <span>Tipo</span>
+      <span>Rentas</span>
+      <span>%</span>
+    </div>
+    <div class="table-row" *ngFor="let item of rentalData">
+      <span>{{ capitalizeFirstLetter(item.carType) }}</span>
+      <span>{{ item.rentalCount }}</span>
+      <span>{{ item.percentage | number:'1.0-1' }}%</span>
+    </div>
+  </div>
+</div>
