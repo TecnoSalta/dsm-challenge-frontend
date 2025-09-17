@@ -1,0 +1,25 @@
+<div class="success-container">
+  <h2>Rental Confirmed!</h2>
+  <p>Your car rental has been successfully processed.</p>
+  <p>Thank you for choosing our service.</p>
+
+  <div *ngIf="selectedCar" class="details-section">
+    <h3>Car Details:</h3>
+    <p><strong>ID:</strong> {{ selectedCar.id }}</p>
+    <p><strong>Type:</strong> {{ selectedCar.type }}</p>
+    <p><strong>Model:</strong> {{ selectedCar.model }}</p>
+    <p><strong>Plate:</strong> {{ selectedCar.plate }}</p>
+  </div>
+
+  <div *ngIf="startDate && endDate" class="details-section">
+    <h3>Rental Dates:</h3>
+    <p><strong>Start Date:</strong> {{ startDate | date:'mediumDate' }}</p>
+    <p><strong>End Date:</strong> {{ endDate | date:'mediumDate' }}</p>
+  </div>
+
+  <div *ngIf="customer" class="details-section">
+    <h3>Customer Details:</h3>
+    <p><strong>Name:</strong> {{ customer.name }}</p>
+    <p><strong>Email:</strong> {{ customer.email }}</p>
+  </div>
+</div>

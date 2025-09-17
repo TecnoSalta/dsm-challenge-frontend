@@ -1,7 +1,6 @@
 
 import { inject, Injectable } from '@angular/core';
 import { Observable, combineLatest, map } from 'rxjs'; // Import combineLatest and map
-import { Rental } from '../../domain/models/rental.model';
 import { RentalRepository } from '../../domain/repositories/rental.repository';
 import { GetAllCarsUseCase } from './get-all-cars.use-case'; // Import GetAllCarsUseCase
 import { Car } from '../../domain/models/car.model'; // Import Car

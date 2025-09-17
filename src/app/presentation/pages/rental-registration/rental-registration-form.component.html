@@ -26,13 +26,12 @@
         <div class="form-group">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Selected Car</mat-label>
-            <input matInput [value]="selectedCar()?.make + ' ' + selectedCar()?.model + ' - $' + selectedCar()?.dailyRate + '/day'" readonly>
+            <input matInput [value]="selectedCar()?.model + ' - $' + selectedCar()?.dailyRate + '/day'" readonly>
           </mat-form-field>
         </div>
 
         <div *ngIf="selectedCar() && !isCarPreselected()" class="selected-car-details">
           <h3>Selected Car Details:</h3>
-          <p><strong>Type:</strong> {{ selectedCar()?.make }}</p>
           <p><strong>Model:</strong> {{ selectedCar()?.model }}</p>
           <p><strong>Daily Rate:</strong> ${{ selectedCar()?.dailyRate | number:'1.2-2' }}</p>
         </div>

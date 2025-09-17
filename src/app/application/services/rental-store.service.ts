@@ -1,48 +1,44 @@
 import { Injectable, signal } from '@angular/core';
-import { Car } from '../../domain/models/car.model';
-import { Customer } from '../../domain/models/customer.model'; // Import Customer
 
-export interface RentalFormState {
-  carId: string | null;
-  startDate: string | null;
-  endDate: string | null;
-  selectedCar: Car | null;
-  customer: Customer | null; // New property
-  id: string | null; // New property for rental ID
-  status: string | null; // New property for rental status
+interface CarDto {
+  id: number;
+  type: string;
+  model: string;
+  plate: string;
+  status: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+interface CustomerDto {
+  name: string;
+  email: string;
+}
+
+@Injectable({ providedIn: 'root' })
 export class RentalStoreService {
-  private rentalFormState = signal<RentalFormState>({
-    carId: null,
-    startDate: null,
-    endDate: null,
-    selectedCar: null,
-    customer: null, // Initialize new property
-    id: null, // Initialize new property
-    status: null, // Initialize new property
-  });
+  // signals
+  startDate = signal<Date | null>(null);
+  endDate = signal<Date | null>(null);
+  selectedCar = signal<CarDto | null>(null);
+  customer = signal<CustomerDto | null>(null);
 
-  setRentalFormState(state: Partial<RentalFormState>): void {
-    this.rentalFormState.update(current => ({ ...current, ...state }));
+  // metodos de acciones
+  setDates(start: Date, end: Date) {
+    this.startDate.set(start);
+    this.endDate.set(end);
   }
 
-  getRentalFormState() {
-    return this.rentalFormState.asReadonly();
+  setCar(car: CarDto) {
+    this.selectedCar.set(car);
   }
 
-  clearRentalFormState(): void {
-    this.rentalFormState.set({
-      carId: null,
-      startDate: null,
-      endDate: null,
-      selectedCar: null,
-      customer: null,
-      id: null,
-      status: null,
-    });
+  setCustomer(cust: CustomerDto) {
+    this.customer.set(cust);
+  }
+
+  resetStore() {
+    this.startDate.set(null);
+    this.endDate.set(null);
+    this.selectedCar.set(null);
+    this.customer.set(null);
   }
 }

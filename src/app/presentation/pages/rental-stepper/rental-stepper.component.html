@@ -1,0 +1,30 @@
+<mat-horizontal-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="searchForm">
+    <form [formGroup]="searchForm">
+      <ng-template matStepLabel>Seleccionar Auto</ng-template>
+      <app-rental-search-step [searchForm]="searchForm"></app-rental-search-step>
+      <div class="stepper-actions">
+        <button mat-button matStepperNext [disabled]="!searchForm.valid">Siguiente</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [stepControl]="verifyForm">
+    <form [formGroup]="verifyForm">
+      <ng-template matStepLabel>Verificar Datos</ng-template>
+      <app-rental-verify-step [verifyForm]="verifyForm" #rentalVerifyStep></app-rental-verify-step>
+      <div class="stepper-actions">
+        <button mat-button matStepperPrevious>Anterior</button>
+        <button mat-button matStepperNext [disabled]="!verifyForm.valid" (click)="rentalVerifyStep.confirmRental()">Confirmar</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step>
+    <ng-template matStepLabel>Confirmación</ng-template>
+    <app-rental-success-step></app-rental-success-step>
+    <div class="stepper-actions">
+      <button mat-button routerLink="/home">Volver al Inicio</button>
+    </div>
+  </mat-step>
+</mat-horizontal-stepper>

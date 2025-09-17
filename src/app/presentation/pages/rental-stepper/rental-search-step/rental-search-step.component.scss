@@ -1,0 +1,50 @@
+.search-form {
+  margin-bottom: 30px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.form-row mat-form-field {
+  flex: 1;
+}
+
+.search-button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.mat-elevation-z8 {
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+}
+
+.car-row {
+  cursor: pointer;
+}
+
+.car-row:hover {
+  background-color: #f0f0f0;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #ccc;
+}
+
+.action-buttons button {
+  padding: 10px 20px;
+}

@@ -142,7 +142,7 @@ export class HomeComponent implements OnInit {
     if (selectedAvailableCar && startDate && endDate) {
       const carToRent: Car = {
         id: selectedAvailableCar.id,
-        make: selectedAvailableCar.type,
+        type: selectedAvailableCar.type,
         model: selectedAvailableCar.model,
         dailyRate: selectedAvailableCar.dailyRate,
         services: [],
