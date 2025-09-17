@@ -19,7 +19,7 @@ export class NotificationService {
       },
       duration: this.getDuration(type),
       horizontalPosition: 'right',
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
       panelClass: [`notification-${type}`]
     });
   }

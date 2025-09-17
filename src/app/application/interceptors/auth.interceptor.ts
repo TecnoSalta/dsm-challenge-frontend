@@ -30,7 +30,7 @@ export function authInterceptor(request: HttpRequest<any>, next: HttpHandlerFn):
       const accessToken = authStore.accessToken();
       const refreshToken = authStore.refreshToken();
 
-      if (accessToken && refreshToken) {
+      if (accessToken && refreshToken && accessToken.length > 0 && refreshToken.length > 0) {
         const refreshRequest: RefreshTokenRequest = {
           accessToken: accessToken,
           refreshToken: refreshToken
@@ -40,7 +40,7 @@ export function authInterceptor(request: HttpRequest<any>, next: HttpHandlerFn):
             authInterceptorService.setRefreshing(false);
             authStore.setTokens(response);
             authInterceptorService.refreshTokenSubject.next(response.accessToken);
-            return handler(addToken(req, response.accessToken)); // Fixed: call handler directly
+            return handler(addToken(req, response.accessToken));
           }),
           catchError((err: any) => {
             authInterceptorService.setRefreshing(false);
@@ -51,6 +51,10 @@ export function authInterceptor(request: HttpRequest<any>, next: HttpHandlerFn):
           })
         );
       } else {
+        console.error('Auth Interceptor: Cannot refresh. Tokens are null or empty.', {
+          accessTokenValue: accessToken,
+          refreshTokenValue: refreshToken
+        });
         authStore.clearTokens();
         authService.logout();
         router.navigate(['/login']);
@@ -61,12 +65,11 @@ export function authInterceptor(request: HttpRequest<any>, next: HttpHandlerFn):
         filter(token => token != null),
         take(1),
         switchMap(jwt => {
-          return handler(addToken(req, jwt)); // Fixed: call handler directly
+          return handler(addToken(req, jwt));
         })
       );
     }
   };
-
   const token = authStore.accessToken();
   if (token) {
     request = addToken(request, token);

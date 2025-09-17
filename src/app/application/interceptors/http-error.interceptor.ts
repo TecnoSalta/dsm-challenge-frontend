@@ -3,6 +3,7 @@ import { inject, Injector } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { NotificationService } from '../services/notification.service';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (
   req: HttpRequest<any>,
@@ -23,6 +24,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (
     }),
     catchError((error: HttpErrorResponse) => {
       const router = injector.get(Router);
+      const notificationService = injector.get(NotificationService);
       let errorMessage = 'An unknown error occurred!';
 
       if (error.error instanceof ErrorEvent) {
@@ -31,7 +33,10 @@ export const httpErrorInterceptor: HttpInterceptorFn = (
       } else {
         switch (error.status) {
           case 400:
-            errorMessage = typeof error.error === 'string' ? error.error : error.error?.message || 'Invalid data';
+            if (error.error && error.error.detail) {
+              notificationService.show(error.error.detail, 'error');
+            }
+            errorMessage = typeof error.error === 'string' ? error.error : error.error?.detail || 'Invalid data';
             console.error(errorMessage);
             break;
           case 401:
