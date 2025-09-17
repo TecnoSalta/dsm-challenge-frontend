@@ -145,7 +145,8 @@ export class HomeComponent implements OnInit {
         id: selectedAvailableCar.id,
         type: selectedAvailableCar.type,
         model: selectedAvailableCar.model,
-        plate: selectedAvailableCar.plate,
+        licensePlate: selectedAvailableCar.licensePlate,
+        dailyRate: selectedAvailableCar.dailyRate,
         status: selectedAvailableCar.status,
       };
 

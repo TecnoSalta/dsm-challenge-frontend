@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment.development';
 
 interface CarDto {
-  id: string; // Changed from number to string
+  id: string;
+  licensePlate: string;
   type: string;
   model: string;
-  plate: string;
+  dailyRate: number;
   status: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class CarsService {
-  private apiUrl = '/api/cars'; // Adjust API URL as needed
+  private readonly apiUrl = environment.apiUrl + '/Cars';
 
   constructor(private http: HttpClient) {}
 
