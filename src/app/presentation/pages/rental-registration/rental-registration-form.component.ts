@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -46,11 +46,17 @@ import { AuthStoreService } from '../../../application/services/auth-store.servi
 })
 export class RentalRegistrationFormComponent implements OnInit {
   rentalForm!: FormGroup;
-  cars$!: Observable<Car[]>;
-  cars: Car[] = [];
-  selectedCar: Car | undefined;
-  isCarPreselected = false;
-  customerFound = false;
+  // private _cars = signal<Car[]>([]); // REMOVED
+  // cars = this._cars.asReadonly(); // REMOVED
+
+  private _selectedCar = signal<Car | undefined>(undefined);
+  selectedCar = this._selectedCar.asReadonly();
+
+  private _isCarPreselected = signal<boolean>(false);
+  isCarPreselected = this._isCarPreselected.asReadonly();
+
+  private _customerFound = signal<boolean>(false);
+  customerFound = this._customerFound.asReadonly();
 
   private readonly fb = inject(FormBuilder);
   private readonly registerRentalUseCase = inject(RegisterRentalUseCase);
@@ -59,6 +65,7 @@ export class RentalRegistrationFormComponent implements OnInit {
   private readonly rentalStoreService = inject(RentalStoreService);
   private readonly getCustomerByDniUseCase = inject(GetCustomerByDniUseCase);
   private readonly authStore = inject(AuthStoreService); // Inject AuthStoreService
+  // private readonly getAllCarsUseCase = inject(GetAllCarsUseCase); // REMOVED
 
   ngOnInit(): void {
     this.rentalForm = this.fb.group({
@@ -70,21 +77,33 @@ export class RentalRegistrationFormComponent implements OnInit {
       address: ['', Validators.required],
     });
 
+    // REMOVED: Fetch all cars to populate the dropdown if not preselected
+    // REMOVED: this.getAllCarsUseCase.execute().subscribe({
+    // REMOVED:   next: (cars) => {
+    // REMOVED:     this._cars.set(cars);
+    // REMOVED:   },
+    // REMOVED:   error: (err) => {
+    // REMOVED:     console.error('Error fetching all cars:', err);
+    // REMOVED:   }
+    // REMOVED: });
+
     const rentalFormState = this.rentalStoreService.getRentalFormState()();
 
     if (rentalFormState.carId && rentalFormState.startDate && rentalFormState.endDate) {
       this.rentalForm.get('carId')?.setValue(rentalFormState.carId);
       this.rentalForm.get('startDate')?.setValue(new Date(rentalFormState.startDate));
       this.rentalForm.get('endDate')?.setValue(new Date(rentalFormState.endDate));
-      this.selectedCar = rentalFormState.selectedCar || undefined; // Use selectedCar directly from state
-      this.isCarPreselected = true;
+      this._selectedCar.set(rentalFormState.selectedCar || undefined); // Use selectedCar directly from state
+      this._isCarPreselected.set(true);
+      this.rentalForm.get('startDate')?.disable(); // Disable startDate
+      this.rentalForm.get('endDate')?.disable();   // Disable endDate
     } else {
       // Fallback to query params if no state from store
       this.route.queryParams.subscribe(params => {
         const carId = params['carId'];
         if (carId) {
           this.rentalForm.get('carId')?.setValue(carId);
-          this.isCarPreselected = true;          
+          this._isCarPreselected.set(true);          
         }
       });
     }
@@ -95,7 +114,7 @@ export class RentalRegistrationFormComponent implements OnInit {
       this.rentalForm.get('dni')?.setValue(userProfile.customer.dni);
       this.rentalForm.get('fullName')?.setValue(userProfile.customer.fullName);
       this.rentalForm.get('address')?.setValue(userProfile.customer.address);
-      this.customerFound = true; // Mark as customer found
+      this._customerFound.set(true); // Mark as customer found
       // Disable fields
       this.rentalForm.get('dni')?.disable();
       this.rentalForm.get('fullName')?.disable();
@@ -104,10 +123,10 @@ export class RentalRegistrationFormComponent implements OnInit {
     
   }
 
-  onCarSelectionChange(): void {
-    const selectedCarId = this.rentalForm.get('carId')?.value;
-    this.selectedCar = this.cars.find(car => car.id === selectedCarId);
-  }
+  // REMOVED: onCarSelectionChange(): void {
+  // REMOVED:   const selectedCarId = this.rentalForm.get('carId')?.value;
+  // REMOVED:   // this._selectedCar.set(this.cars().find(car => car.id === selectedCarId));
+  // REMOVED: }
 
   onDniChange(): void {
     const dni = this.rentalForm.get('dni')?.value;
@@ -117,13 +136,13 @@ export class RentalRegistrationFormComponent implements OnInit {
           if (customer) {
             this.rentalForm.get('fullName')?.setValue(customer.fullName);
             this.rentalForm.get('address')?.setValue(customer.address);
-            this.customerFound = true;
+            this._customerFound.set(true);
             this.rentalForm.get('fullName')?.disable(); // Disable if found
             this.rentalForm.get('address')?.disable(); // Disable if found
           } else {
             this.rentalForm.get('fullName')?.setValue('');
             this.rentalForm.get('address')?.setValue('');
-            this.customerFound = false;
+            this._customerFound.set(false);
             this.rentalForm.get('fullName')?.enable(); // Enable if not found
             this.rentalForm.get('address')?.enable(); // Enable if not found
           }
@@ -132,7 +151,7 @@ export class RentalRegistrationFormComponent implements OnInit {
           console.error('Error fetching customer by DNI:', err);
           this.rentalForm.get('fullName')?.setValue('');
           this.rentalForm.get('address')?.setValue('');
-          this.customerFound = false;
+          this._customerFound.set(false);
           this.rentalForm.get('fullName')?.enable();
           this.rentalForm.get('address')?.enable();
         }
@@ -140,7 +159,7 @@ export class RentalRegistrationFormComponent implements OnInit {
     } else {
       this.rentalForm.get('fullName')?.setValue('');
       this.rentalForm.get('address')?.setValue('');
-      this.customerFound = false;
+      this._customerFound.set(false);
       this.rentalForm.get('fullName')?.enable();
       this.rentalForm.get('address')?.enable();
     }
@@ -151,12 +170,14 @@ export class RentalRegistrationFormComponent implements OnInit {
       console.log('Register Rental button pressed. Form is valid.');
       const userProfile = this.authStore.userProfile(); // Use userProfile from AuthStoreService
 
-      if (userProfile && this.selectedCar) { // Check userProfile instead of user
+      if (userProfile && this.selectedCar()) { // Check userProfile instead of user
+        const formRawValue = this.rentalForm.getRawValue(); // Get all values, including disabled ones
+
         const registerRentalRequest: RegisterRentalRequest = {
           customerId: userProfile.customer?.id || '',
-          carId: this.selectedCar.id || '',
-          startDate: this.rentalForm.value.startDate.toISOString().split('T')[0],
-          endDate: this.rentalForm.value.endDate.toISOString().split('T')[0],
+          carId: this.selectedCar()!.id || '',
+          startDate: formRawValue.startDate.toISOString().split('T')[0], // Use raw value
+          endDate: formRawValue.endDate.toISOString().split('T')[0],     // Use raw value
         };
 
         console.log('Sending rental registration request:', registerRentalRequest);
@@ -164,12 +185,13 @@ export class RentalRegistrationFormComponent implements OnInit {
           (createdRental) => {
             console.log('Rental registration successful. Response:', createdRental);
             this.rentalStoreService.setRentalFormState({
-              carId: createdRental.car.id,
-              startDate: createdRental.startDate.toISOString().split('T')[0],
-              endDate: createdRental.endDate.toISOString().split('T')[0],
-              selectedCar: createdRental.car,
+              carId: createdRental.carId,
+              startDate: createdRental.startDate, // Removed .toISOString().split('T')[0]
+              endDate: createdRental.endDate,     // Removed .toISOString().split('T')[0]
+              selectedCar: this.selectedCar(),
               customer: createdRental.customer,
-              id: createdRental.id
+              id: createdRental.id,
+              status: createdRental.status // Add status from createdRental
             });
             this.router.navigate(['/rental-confirmation']);
           },
@@ -178,7 +200,7 @@ export class RentalRegistrationFormComponent implements OnInit {
           }
         );
       } else {
-        console.warn('Cannot send rental request: userProfile or selectedCar is missing.', { userProfile, selectedCar: this.selectedCar });
+        console.warn('Cannot send rental request: userProfile or selectedCar is missing.', { userProfile, selectedCar: this.selectedCar() });
       }
     }
   }

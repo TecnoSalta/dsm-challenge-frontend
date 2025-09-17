@@ -23,8 +23,8 @@ export function authInterceptor(request: HttpRequest<any>, next: HttpHandlerFn):
   };
 
   const handle401Error = (req: HttpRequest<any>, handler: HttpHandlerFn) => {
-    if (!authInterceptorService.isRefreshing) {
-      authInterceptorService.isRefreshing = true;
+    if (!authInterceptorService.isRefreshing()) {
+      authInterceptorService.setRefreshing(true);
       authInterceptorService.refreshTokenSubject.next(null);
 
       const accessToken = authStore.accessToken();
@@ -37,13 +37,13 @@ export function authInterceptor(request: HttpRequest<any>, next: HttpHandlerFn):
         };
         return authService.refreshToken(refreshRequest).pipe(
           switchMap((response: any) => {
-            authInterceptorService.isRefreshing = false;
+            authInterceptorService.setRefreshing(false);
             authStore.setTokens(response);
             authInterceptorService.refreshTokenSubject.next(response.accessToken);
             return handler(addToken(req, response.accessToken)); // Fixed: call handler directly
           }),
           catchError((err: any) => {
-            authInterceptorService.isRefreshing = false;
+            authInterceptorService.setRefreshing(false);
             authStore.clearTokens();
             authService.logout();
             router.navigate(['/login']);

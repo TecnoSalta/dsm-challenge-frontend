@@ -16,9 +16,7 @@ export class AuthService {
   private readonly authRepository = inject(AuthRepository);
 
   constructor() {
-    if (this.authStore.accessToken()) {
-      this.getProfile().subscribe();
-    }
+    // Removed this.getProfile().subscribe() to break circular dependency
   }
 
   login(credentials: Credentials): Observable<AuthResponse> {

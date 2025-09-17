@@ -9,6 +9,7 @@ export interface RentalFormState {
   selectedCar: Car | null;
   customer: Customer | null; // New property
   id: string | null; // New property for rental ID
+  status: string | null; // New property for rental status
 }
 
 @Injectable({
@@ -22,6 +23,7 @@ export class RentalStoreService {
     selectedCar: null,
     customer: null, // Initialize new property
     id: null, // Initialize new property
+    status: null, // Initialize new property
   });
 
   setRentalFormState(state: Partial<RentalFormState>): void {
@@ -40,6 +42,7 @@ export class RentalStoreService {
       selectedCar: null,
       customer: null,
       id: null,
+      status: null,
     });
   }
 }

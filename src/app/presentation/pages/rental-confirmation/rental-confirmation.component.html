@@ -1,26 +1,24 @@
 <div class="container">
-  <mat-card *ngIf="rentalDetails">
+        <mat-card *ngIf="rentalDetails()">
     <mat-card-title>Rental Confirmation</mat-card-title>
     <mat-card-content>
       <p class="confirmation-message">Reserva confirmada. Recibirás un email con los detalles.</p>
 
-      <h3>Rental Details:</h3>
-      <p><strong>Rental ID:</strong> {{ rentalDetails.id }}</p>
-      <p><strong>Start Date:</strong> {{ rentalDetails.startDate | date }}</p>
-      <p><strong>End Date:</strong> {{ rentalDetails.endDate | date }}</p>
+      <p><strong>Rental ID:</strong> {{ rentalDetails()?.id }}</p>
+      <p><strong>Start Date:</strong> {{ rentalDetails()?.startDate | date }}</p>
+      <p><strong>End Date:</strong> {{ rentalDetails()?.endDate | date }}</p>
 
       <h3>Car Details:</h3>
-      <p><strong>Type:</strong> {{ rentalDetails.car.make }}</p>
-      <p><strong>Model:</strong> {{ rentalDetails.car.model }}</p>
-      <p><strong>Daily Rate:</strong> ${{ rentalDetails.car.dailyRate | number:'1.2-2' }}</p>
+      <p><strong>Type:</strong> {{ selectedCar()?.make }}</p>
+      <p><strong>Model:</strong> {{ selectedCar()?.model }}</p>
+      <p><strong>Daily Rate:</strong> ${{ selectedCar()?.dailyRate | number:'1.2-2' }}</p>
 
       <!-- Customer details will be displayed here once available -->
       <h3>Customer Details:</h3>
-      <p><strong>Full Name:</strong> {{ rentalDetails.customer.fullName }}</p>
-      <p><strong>DNI:</strong> {{ rentalDetails.customer.id }}</p>
-      <p><strong>Address:</strong> {{ rentalDetails.customer.address }}</p>
+      <p><strong>Full Name:</strong> {{ rentalDetails()!.customer.fullName }}</p>
+      <p><strong>Address:</strong> {{ rentalDetails()!.customer.address }}</p>
 
-      <p class="status-message">Status: Confirmed</p>
+      <p class="status-message">Status: {{ rentalDetails()?.status }}</p>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button color="primary" (click)="goToHome()">Go to Home</button>

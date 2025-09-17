@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { CarRepository } from '../../domain/repositories/car.repository';
 import { Car } from '../../domain/models/car.model';
@@ -12,10 +12,10 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class CarApiService extends CarRepository {
-  private apiUrl = environment.apiUrl + '/Cars';
-  private availabilityUrl = environment.apiUrl + '/Availability';
+  private readonly apiUrl = environment.apiUrl + '/Cars';
+  private readonly availabilityUrl = environment.apiUrl + '/Availability';
 
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   constructor() {
     super();
@@ -23,7 +23,7 @@ export class CarApiService extends CarRepository {
 
   getAll(): Observable<Car[]> {
     // Assuming a backend endpoint for all cars if needed
-    return this.http.get<Car[]>(`${this.apiUrl}`);
+    return this.http.get<Car[]>(this.apiUrl).pipe(map(cars => cars || []));
   }
 
   getById(id: string): Observable<Car | undefined> {
