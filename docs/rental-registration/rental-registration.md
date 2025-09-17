@@ -27,10 +27,9 @@ Funcionalidad a Desarrollar / Mejorar (Autocompletado y Validación UI):
 Autocompletado de Auto: Los campos de "Tipo de auto" y "Modelo de auto" deben mostrar automáticamente la selección realizada en la vista "Home". Estos campos deben ser de solo lectura o deshabilitados para edición directa en este paso, para asegurar la coherencia con la selección previa.
 Autocompletado de Fechas: Los campos de "Fechas de inicio" y "Fechas de fin" deben mostrar automáticamente las fechas seleccionadas en la vista "Home". Similar al auto, estos campos deben ser de solo lectura o deshabilitados.
 Autocompletado de Cliente (a desarrollar):
-Al ingresar el DNI, el sistema debe intentar autocompletar el "Nombre completo" y la "Dirección" del cliente si este ya existe en el sistema (esto implicará una llamada al backend para verificar la existencia del cliente y obtener sus datos).
 Si el cliente no existe, los campos "Nombre completo" y "Dirección" deben permanecer editables para que el usuario los ingrese manualmente.
 Validaciones en UI:
-Validación de formato para DNI, nombre completo y dirección.
+ nombre completo y dirección.
 Validación de campos obligatorios antes de permitir el envío.
 Mensajes de error claros y amigables al usuario para cada validación fallida.
 Acción de Envío: Un botón "Confirmar Alquiler" o similar para enviar el formulario.

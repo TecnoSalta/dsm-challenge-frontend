@@ -22,7 +22,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { RentalStoreService } from '../../../application/services/rental-store.service';
-import { GetCustomerByDniUseCase } from '../../../application/use-cases/get-customer-by-dni.use-case';
 import { AuthStoreService } from '../../../application/services/auth-store.service'; // Import AuthStoreService
 
 @Component({
@@ -63,9 +62,7 @@ export class RentalRegistrationFormComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly rentalStoreService = inject(RentalStoreService);
-  private readonly getCustomerByDniUseCase = inject(GetCustomerByDniUseCase);
-  private readonly authStore = inject(AuthStoreService); // Inject AuthStoreService
-  // private readonly getAllCarsUseCase = inject(GetAllCarsUseCase); // REMOVED
+  private readonly authStore = inject(AuthStoreService); 
 
   ngOnInit(): void {
     this.rentalForm = this.fb.group({
@@ -77,15 +74,6 @@ export class RentalRegistrationFormComponent implements OnInit {
       address: ['', Validators.required],
     });
 
-    // REMOVED: Fetch all cars to populate the dropdown if not preselected
-    // REMOVED: this.getAllCarsUseCase.execute().subscribe({
-    // REMOVED:   next: (cars) => {
-    // REMOVED:     this._cars.set(cars);
-    // REMOVED:   },
-    // REMOVED:   error: (err) => {
-    // REMOVED:     console.error('Error fetching all cars:', err);
-    // REMOVED:   }
-    // REMOVED: });
 
     const rentalFormState = this.rentalStoreService.getRentalFormState()();
 
@@ -123,40 +111,9 @@ export class RentalRegistrationFormComponent implements OnInit {
     
   }
 
-  // REMOVED: onCarSelectionChange(): void {
-  // REMOVED:   const selectedCarId = this.rentalForm.get('carId')?.value;
-  // REMOVED:   // this._selectedCar.set(this.cars().find(car => car.id === selectedCarId));
-  // REMOVED: }
-
   onDniChange(): void {
     const dni = this.rentalForm.get('dni')?.value;
-    if (dni) {
-      this.getCustomerByDniUseCase.execute(dni).subscribe({
-        next: (customer) => {
-          if (customer) {
-            this.rentalForm.get('fullName')?.setValue(customer.fullName);
-            this.rentalForm.get('address')?.setValue(customer.address);
-            this._customerFound.set(true);
-            this.rentalForm.get('fullName')?.disable(); // Disable if found
-            this.rentalForm.get('address')?.disable(); // Disable if found
-          } else {
-            this.rentalForm.get('fullName')?.setValue('');
-            this.rentalForm.get('address')?.setValue('');
-            this._customerFound.set(false);
-            this.rentalForm.get('fullName')?.enable(); // Enable if not found
-            this.rentalForm.get('address')?.enable(); // Enable if not found
-          }
-        },
-        error: (err) => {
-          console.error('Error fetching customer by DNI:', err);
-          this.rentalForm.get('fullName')?.setValue('');
-          this.rentalForm.get('address')?.setValue('');
-          this._customerFound.set(false);
-          this.rentalForm.get('fullName')?.enable();
-          this.rentalForm.get('address')?.enable();
-        }
-      });
-    } else {
+    if (!dni) {
       this.rentalForm.get('fullName')?.setValue('');
       this.rentalForm.get('address')?.setValue('');
       this._customerFound.set(false);

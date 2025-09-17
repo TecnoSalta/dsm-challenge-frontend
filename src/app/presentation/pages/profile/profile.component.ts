@@ -41,7 +41,7 @@ export class ProfileComponent implements OnInit {
       const profile = this.authStore.userProfile(); // Access signal value
       if (profile) {
         this.profileForm.patchValue({
-          dni: profile.customer?.dni,
+          dni: ' ',
           fullName: profile.customer?.fullName,
           address: profile.customer?.address,
           email: profile.email,
