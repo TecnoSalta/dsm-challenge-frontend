@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterModule } from '@angular/router'; // Add Router and RouterModule
 import { Car } from '../../../domain/models/car.model'; // Add this import
 
+import { AuthStoreService } from '../../../application/services/auth-store.service';
+
 @Component({
   selector: 'app-rental-confirmation',
   templateUrl: './rental-confirmation.component.html',
@@ -28,15 +30,16 @@ export class RentalConfirmationComponent implements OnInit {
 
   private rentalStoreService = inject(RentalStoreService);
   private router = inject(Router);
+  public readonly authStore = inject(AuthStoreService);
 
   ngOnInit(): void {
     const state = this.rentalStoreService.getRentalFormState()();
     console.log('Rental-confirmation Retrieved rental form state:', state);
-    if (state.id && state.customer && state.selectedCar && state.startDate && state.endDate && state.status) {
+    if (state.id && state.selectedCar && state.startDate && state.endDate && state.status) {
       this._selectedCar.set(state.selectedCar); // Assign selectedCar
       this._rentalDetails.set({
         id: state.id,
-        customer: state.customer,
+        
         carId: state.selectedCar.id,
         startDate: state.startDate,
         endDate: state.endDate,

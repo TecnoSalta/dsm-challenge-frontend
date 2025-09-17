@@ -11,7 +11,8 @@ import { httpErrorInterceptor } from './app/application/interceptors/http-error.
 import { CarApiService } from './app/infrastructure/repositories/car-api.service';
 import { RentalRepository } from './app/domain/repositories/rental.repository';
 import { RentalApiRepository } from './app/infrastructure/repositories/rental-api.repository';
-import { CustomerRepository } from './app/domain/repositories/customer.repository';
+import { CUSTOMER_REPOSITORY } from './app/domain/repositories/customer.repository';
+import { CustomerApiService } from './app/infrastructure/repositories/customer-api.service';
 import { AuthApiRepository } from './app/infrastructure/repositories/auth-api.repository';
 
 bootstrapApplication(AppComponent, {
@@ -22,5 +23,6 @@ bootstrapApplication(AppComponent, {
     { provide: CarRepository, useClass: CarApiService },
     { provide: AuthRepository, useClass: AuthApiRepository },
     { provide: RentalRepository, useClass: RentalApiRepository },
+    { provide: CUSTOMER_REPOSITORY, useClass: CustomerApiService },
   ],
 }).catch((err) => console.error(err));

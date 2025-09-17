@@ -1,7 +1,9 @@
 import { Observable } from 'rxjs';
 import { Customer } from '../models/customer.model';
+import { InjectionToken } from '@angular/core'; // Import InjectionToken
 
-export abstract class CustomerRepository {
-  abstract getByDni(dni: string): Observable<Customer | undefined>;
-  // abstract create(customer: Customer): Observable<Customer>; // If we need to create new customers
+export interface CustomerRepository {
+  getCustomerByDni(dni: string): Observable<Customer | undefined>;
 }
+
+export const CUSTOMER_REPOSITORY = new InjectionToken<CustomerRepository>('CustomerRepository'); // Define InjectionToken

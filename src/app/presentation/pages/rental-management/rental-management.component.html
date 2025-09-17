@@ -12,7 +12,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let rental of rentalsWithCarDetails()">
-        <td>{{ rental.customer.fullName }}</td>
+        
               <td>{{ rental.carDetails.make }} {{ rental.carDetails.model }}</td>
         <td>{{ rental.startDate | date }}</td>
         <td>{{ rental.endDate | date }}</td>

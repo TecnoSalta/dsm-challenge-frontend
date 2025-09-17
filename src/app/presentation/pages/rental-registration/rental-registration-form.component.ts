@@ -146,7 +146,7 @@ export class RentalRegistrationFormComponent implements OnInit {
               startDate: createdRental.startDate, // Removed .toISOString().split('T')[0]
               endDate: createdRental.endDate,     // Removed .toISOString().split('T')[0]
               selectedCar: this.selectedCar(),
-              customer: createdRental.customer,
+              
               id: createdRental.id,
               status: createdRental.status // Add status from createdRental
             });

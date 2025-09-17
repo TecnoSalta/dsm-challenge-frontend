@@ -2,7 +2,7 @@ import { Customer } from './customer.model';
 
 export interface Rental {
   id?: string;
-  customer: Customer;
+  customer?: Customer; // Make customer optional
   startDate: string;
   endDate: string;
   carId: string;

@@ -13,10 +13,10 @@
       <p><strong>Model:</strong> {{ selectedCar()?.model }}</p>
       <p><strong>Daily Rate:</strong> ${{ selectedCar()?.dailyRate | number:'1.2-2' }}</p>
 
-      <!-- Customer details will be displayed here once available -->
       <h3>Customer Details:</h3>
-      <p><strong>Full Name:</strong> {{ rentalDetails()!.customer.fullName }}</p>
-      <p><strong>Address:</strong> {{ rentalDetails()!.customer.address }}</p>
+      <p><strong>Full Name:</strong> {{ authStore.userProfile()?.customer?.fullName }}</p>
+      <p><strong>Address:</strong> {{ authStore.userProfile()?.customer?.address }}</p>
+      
 
       <p class="status-message">Status: {{ rentalDetails()?.status }}</p>
     </mat-card-content>
