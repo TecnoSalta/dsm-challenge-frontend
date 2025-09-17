@@ -24,17 +24,17 @@
         </div>
 
         <div class="form-group">
-          <ng-container *ngIf="isCarPreselected; else carSelectionDropdown">
+          <ng-container *ngIf="isCarPreselected(); else carSelectionDropdown">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Selected Car</mat-label>
-              <input matInput [value]="selectedCar?.make + ' ' + selectedCar?.model + ' - $' + selectedCar?.dailyRate + '/day'" readonly>
+              <input matInput [value]="selectedCar()?.make + ' ' + selectedCar()?.model + ' - $' + selectedCar()?.dailyRate + '/day'" readonly>
             </mat-form-field>
           </ng-container>
           <ng-template #carSelectionDropdown>
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Car</mat-label>
               <mat-select formControlName="carId" (selectionChange)="onCarSelectionChange()">
-                <mat-option *ngFor="let car of cars$ | async" [value]="car.id">
+                <mat-option *ngFor="let car of cars()" [value]="car.id">
                   {{ car.make }} {{ car.model }} - ${{ car.dailyRate }}/day
                 </mat-option>
               </mat-select>
@@ -43,11 +43,11 @@
           </ng-template>
         </div>
 
-        <div *ngIf="selectedCar && !isCarPreselected" class="selected-car-details">
+        <div *ngIf="selectedCar() && !isCarPreselected()" class="selected-car-details">
           <h3>Selected Car Details:</h3>
-          <p><strong>Type:</strong> {{ selectedCar.make }}</p>
-          <p><strong>Model:</strong> {{ selectedCar.model }}</p>
-          <p><strong>Daily Rate:</strong> ${{ selectedCar.dailyRate | number:'1.2-2' }}</p>
+          <p><strong>Type:</strong> {{ selectedCar()?.make }}</p>
+          <p><strong>Model:</strong> {{ selectedCar()?.model }}</p>
+          <p><strong>Daily Rate:</strong> ${{ selectedCar()?.dailyRate | number:'1.2-2' }}</p>
         </div>
 
         <mat-divider></mat-divider>
@@ -64,7 +64,7 @@
         <div class="form-group">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Full Name</mat-label>
-            <input matInput formControlName="fullName" [readonly]="customerFound">
+            <input matInput formControlName="fullName" [readonly]="customerFound()">
             <mat-error *ngIf="rentalForm.get('fullName')?.hasError('required')">Full Name is required</mat-error>
           </mat-form-field>
         </div>
@@ -72,7 +72,7 @@
         <div class="form-group">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Address</mat-label>
-            <input matInput formControlName="address" [readonly]="customerFound">
+            <input matInput formControlName="address" [readonly]="customerFound()">
             <mat-error *ngIf="rentalForm.get('address')?.hasError('required')">Address is required</mat-error>
           </mat-form-field>
         </div>

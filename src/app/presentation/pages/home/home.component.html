@@ -28,7 +28,7 @@
             <mat-label>Car Type</mat-label>
             <mat-select formControlName="carType" (selectionChange)="onTypeChange()">
               <mat-option value="">-- Any --</mat-option>
-              <mat-option *ngFor="let metadata of carMetadata" [value]="metadata.type">
+              <mat-option *ngFor="let metadata of carMetadata()" [value]="metadata.type">
                 {{ metadata.type }}
               </mat-option>
             </mat-select>
@@ -38,7 +38,7 @@
             <mat-label>Model</mat-label>
             <mat-select formControlName="model">
               <mat-option value="">-- Any --</mat-option>
-              <mat-option *ngFor="let model of filteredModels" [value]="model">
+              <mat-option *ngFor="let model of filteredModels()" [value]="model">
                 {{ model }}
               </mat-option>
             </mat-select>
@@ -46,23 +46,23 @@
         </div>
 
         <div class="button-container">
-          <button mat-raised-button color="primary" type="submit" [disabled]="searchForm.invalid || loading">
-            <span *ngIf="!loading">Search Availability</span>
-            <mat-spinner *ngIf="loading" diameter="24"></mat-spinner>
+          <button mat-raised-button color="primary" type="submit" [disabled]="searchForm.invalid || loading()">
+            <span *ngIf="!loading()">Search Availability</span>
+            <mat-spinner *ngIf="loading()" diameter="24"></mat-spinner>
           </button>
         </div>
 
-        <div *ngIf="error" class="error-message">
-          {{ error }}
+        <div *ngIf="error()" class="error-message">
+          {{ error() }}
         </div>
       </form>
     </mat-card-content>
   </mat-card>
 
-  <div *ngIf="availableCars.length > 0" class="available-cars-section">
+  <div *ngIf="availableCars().length > 0" class="available-cars-section">
     <h2>Available Cars</h2>
     <div class="card-container">
-      <mat-card *ngFor="let car of availableCars">
+      <mat-card *ngFor="let car of availableCars()">
         <mat-card-header>
           <mat-card-title>{{ car.model }}</mat-card-title>
           <mat-card-subtitle>{{ car.type }}</mat-card-subtitle>
@@ -77,7 +77,7 @@
     </div>
   </div>
 
-  <div *ngIf="!loading && availableCars.length === 0 && searchForm.valid && !error" class="no-results">
+  <div *ngIf="!loading() && availableCars().length === 0 && searchForm.valid && !error()" class="no-results">
     <p>No cars found for the selected criteria. Try adjusting your search.</p>
   </div>
 </div>

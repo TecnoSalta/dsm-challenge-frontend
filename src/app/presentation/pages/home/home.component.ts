@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -40,11 +40,20 @@ import { Car } from '../../../domain/models/car.model';
 })
 export class HomeComponent implements OnInit {
   searchForm: FormGroup;
-  carMetadata: CarMetadata[] = [];
-  availableCars: AvailableCar[] = [];
-  filteredModels: string[] = [];
-  loading = false;
-  error: string | null = null;
+  private _carMetadata = signal<CarMetadata[]>([]);
+  carMetadata = this._carMetadata.asReadonly();
+
+  private _availableCars = signal<AvailableCar[]>([]);
+  availableCars = this._availableCars.asReadonly();
+
+  private _filteredModels = signal<string[]>([]);
+  filteredModels = this._filteredModels.asReadonly();
+
+  private _loading = signal<boolean>(false);
+  loading = this._loading.asReadonly();
+
+  private _error = signal<string | null>(null);
+  error = this._error.asReadonly();
 
   private readonly getCarMetadataUseCase = inject(GetCarMetadataUseCase);
   private readonly getAvailableCarsUseCase = inject(GetAvailableCarsUseCase);
@@ -69,11 +78,11 @@ export class HomeComponent implements OnInit {
   getCarMetadata(): void {
     this.getCarMetadataUseCase.execute().subscribe({
       next: (metadata) => {
-        this.carMetadata = metadata;
+        this._carMetadata.set(metadata);
       },
       error: (err) => {
         console.error('Error fetching car metadata:', err);
-        this.error = 'Failed to load car metadata.';
+        this._error.set('Failed to load car metadata.');
       }
     });
   }
@@ -82,51 +91,51 @@ export class HomeComponent implements OnInit {
     const selectedType = this.searchForm.get('carType')?.value;
     this.searchForm.get('model')?.setValue('');
     if (selectedType) {
-      this.filteredModels = this.carMetadata.find(m => m.type === selectedType)?.models || [];
+      this._filteredModels.set(this.carMetadata().find(m => m.type === selectedType)?.models || []);
     } else {
-      this.filteredModels = [];
+      this._filteredModels.set([]);
     }
   }
 
   onSearch(): void {
     if (this.searchForm.invalid) {
-      this.error = 'Please select start and end dates.';
+      this._error.set('Please select start and end dates.');
       return;
     }
 
-    this.loading = true;
-    this.error = null;
+    this._loading.set(true);
+    this._error.set(null);
 
     const formValue = this.searchForm.value;
     const request: AvailabilityRequest = {
       startDate: formValue.startDate.toISOString().split('T')[0],
       endDate: formValue.endDate.toISOString().split('T')[0],
       carType: formValue.carType || undefined,
-      model: formValue.model || undefined
+      model: formValue.model ? encodeURIComponent(formValue.model) : undefined // Apply encodeURIComponent
     };
 
     this.getAvailableCarsUseCase.execute(request)
       .pipe(
         finalize(() => {
-          this.loading = false;
+          this._loading.set(false);
         })
       )
       .subscribe({
         next: (cars) => {
-          this.availableCars = cars;
+          this._availableCars.set(cars);
           if (cars.length === 0) {
-            this.error = 'No cars available for the selected criteria.';
+            this._error.set('No cars available for the selected criteria.');
           }
         },
         error: (err) => {
           console.error('Error fetching available cars:', err);
-          this.error = 'Failed to fetch available cars.';
+          this._error.set('Failed to fetch available cars.');
         }
       });
   }
 
   rentCar(carId: string): void {
-    const selectedAvailableCar = this.availableCars.find(car => car.id === carId);
+    const selectedAvailableCar = this.availableCars().find(car => car.id === carId);
     const startDate = this.searchForm.get('startDate')?.value;
     const endDate = this.searchForm.get('endDate')?.value;
 
@@ -151,3 +160,4 @@ export class HomeComponent implements OnInit {
     }
   }
 }
+
